@@ -34,11 +34,23 @@
   
   https://docs.docker.com/samples/library/kibana/#running-in-development-mode
   $ docker network create somenetwork
-  $ docker run -d --name kibana --net somenetwork -p 5601:5601 docker.elastic.co/kibana/kibana:6.4.2
+  $ docker run -d --name kibana -e ELASTICSEARCH_URL=http://95.216.137.70:9200 --net somenetwork -p 5601:5601 docker.elastic.co/kibana/kibana:6.4.2
   
   $ sudo docker ps
 CONTAINER ID        IMAGE                                                 COMMAND                  CREATED              STATUS              PORTS                                            NAMES
 776e51941216        docker.elastic.co/elasticsearch/elasticsearch:6.4.2   "/usr/local/bin/dock…"   5 seconds ago        Up 4 seconds        0.0.0.0:9200->9200/tcp, 0.0.0.0:9300->9300/tcp   elasticsearch
 826e2b8b7817        docker.elastic.co/kibana/kibana:6.4.2                 "/usr/local/bin/kiba…"   About a minute ago   Up About a minute   0.0.0.0:5601->5601/tcp                           kibana
   
+  $ curl localhost:5601
+<script>var hashRoute = '/app/kibana';
+var defaultRoute = '/app/kibana';
+
+var hash = window.location.hash;
+if (hash.length) {
+  window.location = hashRoute + hash;
+} else {
+  window.location = defaultRoute;
+}</script>
+
+
   
