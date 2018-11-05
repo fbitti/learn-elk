@@ -1,0 +1,15 @@
+Step 1) check whether java is installed
+$ java
+
+If not present, search for Java SE downloads - JDK 10 (or earlier version)
+
+Step 2) at the ElasticSearch website https://www.elastic.co/
+Go to downloads, choose ElasticSearch and download the TAR file.
+for example: elasticsearch-6.3.2.tar.gz
+
+Download Kibana as well.
+kibana-6.3.2-darwin-x86_64.tar.gz
+
+Step 3) follow the ElasticSearch installation steps
+
+
