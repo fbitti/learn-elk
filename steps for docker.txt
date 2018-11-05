@@ -1,0 +1,2 @@
+1) Install docker
+https://docs.docker.com/install/linux/docker-ce/debian/
