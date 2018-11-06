@@ -82,3 +82,86 @@ GET /business
     }
   }
 }
+
+Step 5) index a new document with a new "price" field on it
+PUT business/building/217
+{
+  "address": "11 Pen Av",
+  "floors": 5,
+  "offices": 7,
+  "price": 450000,
+  "loc": {
+    "lat": 40.693519,
+    "lon": -73.988560
+  }
+}
+
+{
+  "_index": "business",
+  "_type": "building",
+  "_id": "217",
+  "_version": 1,
+  "result": "created",
+  "_shards": {
+    "total": 2,
+    "successful": 1,
+    "failed": 0
+  },
+  "_seq_no": 0,
+  "_primary_term": 1
+}
+
+Step 6) GET the structure of the business index. The mappings have been automatically updated to include the "price" field
+GET /business
+{
+  "business": {
+    "aliases": {},
+    "mappings": {
+      "building": {
+        "properties": {
+          "address": {
+            "type": "text",
+            "fields": {
+              "keyword": {
+                "type": "keyword",
+                "ignore_above": 256
+              }
+            }
+          },
+          "floors": {
+            "type": "long"
+          },
+          "loc": {
+            "properties": {
+              "lat": {
+                "type": "float"
+              },
+              "lon": {
+                "type": "float"
+              }
+            }
+          },
+          "offices": {
+            "type": "long"
+          },
+          "price": {
+            "type": "long"
+          }
+        }
+      }
+    },
+    "settings": {
+      "index": {
+        "creation_date": "1541528026880",
+        "number_of_shards": "5",
+        "number_of_replicas": "1",
+        "uuid": "UvmfXP_CQLunxQzOw7DetQ",
+        "version": {
+          "created": "6040299"
+        },
+        "provided_name": "business"
+      }
+    }
+  }
+}
+
