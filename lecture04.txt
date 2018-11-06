@@ -77,3 +77,12 @@ GET /vehicles/car/123
     "price": 19300.97
   }
 }
+
+Step 7) try to reference a document that does not exist
+GET /vehicles/car/123
+{
+  "_index": "vehicles",
+  "_type": "car",
+  "_id": "124",
+  "found": false
+}
