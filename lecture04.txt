@@ -196,6 +196,35 @@ GET /vehicles/car/123/_source
   "driver": "Tom"
 }
 
+Step 14) In order to delete a document, use the DELETE method.
+DELETE /vehicles/car/123/
+
+{
+  "_index": "vehicles",
+  "_type": "car",
+  "_id": "123",
+  "_version": 12,
+  "result": "deleted",
+  "_shards": {
+    "total": 2,
+    "successful": 1,
+    "failed": 0
+  },
+  "_seq_no": 11,
+  "_primary_term": 1
+}
+
+GET /vehicles/car/123/
+
+{
+  "_index": "vehicles",
+  "_type": "car",
+  "_id": "123",
+  "found": false
+}
+
+The document is now marked as deleted and will be completely removed later when Elasticsearch runs its garbage collection routine.
+
 
 
 
