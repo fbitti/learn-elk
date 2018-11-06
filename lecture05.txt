@@ -186,7 +186,7 @@ PUT /contracts/_doc/9987
 Step 9) Click on Kibana's Discover tab and it will list the 3 indexes you created.
 
 Step 10) use the "/_search" endpoint to list all documents in the index
-GET /business/building/_search
+GET /business/_search
 {
   "took": 14,
   "timed_out": false,
@@ -235,7 +235,48 @@ GET /business/building/_search
   }
 }
 
-Step 11) 
+Step 11) Search only the document with the word "pen" in the "address" field
+GET /business/_search/
+{
+  "query": {
+    "term": {
+      "address": "pen"
+    }
+  }
+}
+
+{
+  "took": 6,
+  "timed_out": false,
+  "_shards": {
+    "total": 5,
+    "successful": 5,
+    "skipped": 0,
+    "failed": 0
+  },
+  "hits": {
+    "total": 1,
+    "max_score": 0.2876821,
+    "hits": [
+      {
+        "_index": "business",
+        "_type": "building",
+        "_id": "217",
+        "_score": 0.2876821,
+        "_source": {
+          "address": "11 Pen Av",
+          "floors": 5,
+          "offices": 7,
+          "price": 450000,
+          "loc": {
+            "lat": 40.693519,
+            "lon": -73.98856
+          }
+        }
+      }
+    ]
+  }
+}
 
 
 
