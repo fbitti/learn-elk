@@ -1,0 +1,46 @@
+Indexing, Retrieving and Deleting Documents.
+
+Step 1) Open Kibana
+
+Step 2) go to Dev tools
+
+Step 3) in order to index a document like this:
+{
+  "make": "Honda",
+  "Color": "Black",
+  "HP": 250,
+  "mileage": 24000,
+  "price": 19300.97
+}
+
+follow the syntax 
+PUT /{index}/{type}/{id}
+attention: {type} is deprecated since Elasticsearch version 6.
+  
+PUT /vehicles/car/123
+{
+  "make": "Honda",
+  "Color": "Black",
+  "HP": 250,
+  "mileage": 24000,
+  "price": 19300.97
+}
+
+
+Step 4) Click play
+This is the response:
+#! Deprecation: the default number of shards will change from [5] to [1] in 7.0.0; if you wish to continue using the default of [5] shards, you must manage this on the create index request or with an index template
+{
+  "_index": "vehicles",
+  "_type": "car",
+  "_id": "123",
+  "_version": 1,
+  "result": "created",
+  "_shards": {
+    "total": 2,
+    "successful": 1,
+    "failed": 0
+  },
+  "_seq_no": 0,
+  "_primary_term": 1
+}
