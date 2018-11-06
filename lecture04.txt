@@ -225,6 +225,117 @@ GET /vehicles/car/123/
 
 The document is now marked as deleted and will be completely removed later when Elasticsearch runs its garbage collection routine.
 
+Step 15) If you GET the index, Elasticsearch responds with its structure.
+Elasticsearch was smart enough to figure out the types of each field (float, string, etc).
+GET /vehicles
 
+{
+  "vehicles": {
+    "aliases": {},
+    "mappings": {
+      "car": {
+        "properties": {
+          "Color": {
+            "type": "text",
+            "fields": {
+              "keyword": {
+                "type": "keyword",
+                "ignore_above": 256
+              }
+            }
+          },
+          "HP": {
+            "type": "long"
+          },
+          "doc": {
+            "properties": {
+              "driver": {
+                "type": "text",
+                "fields": {
+                  "keyword": {
+                    "type": "keyword",
+                    "ignore_above": 256
+                  }
+                }
+              },
+              "price": {
+                "type": "float"
+              }
+            }
+          },
+          "driver": {
+            "type": "text",
+            "fields": {
+              "keyword": {
+                "type": "keyword",
+                "ignore_above": 256
+              }
+            }
+          },
+          "make": {
+            "type": "text",
+            "fields": {
+              "keyword": {
+                "type": "keyword",
+                "ignore_above": 256
+              }
+            }
+          },
+          "mileage": {
+            "type": "long"
+          },
+          "price": {
+            "type": "float"
+          }
+        }
+      }
+    },
+    "settings": {
+      "index": {
+        "creation_date": "1541513368766",
+        "number_of_shards": "5",
+        "number_of_replicas": "1",
+        "uuid": "xqyaTTDvTtCw4VUu9ktq0A",
+        "version": {
+          "created": "6040299"
+        },
+        "provided_name": "vehicles"
+      }
+    }
+  }
+}
+
+
+
+Step 16) In order to delete the entire index, use the DELETE method with the /{index} endpoint.
+DELETE /vehicles
+
+{
+  "acknowledged": true
+}
+
+GET /vehicles
+
+{
+  "error": {
+    "root_cause": [
+      {
+        "type": "index_not_found_exception",
+        "reason": "no such index",
+        "resource.type": "index_or_alias",
+        "resource.id": "vehicles",
+        "index_uuid": "_na_",
+        "index": "vehicles"
+      }
+    ],
+    "type": "index_not_found_exception",
+    "reason": "no such index",
+    "resource.type": "index_or_alias",
+    "resource.id": "vehicles",
+    "index_uuid": "_na_",
+    "index": "vehicles"
+  },
+  "status": 404
+}
 
 
