@@ -13,5 +13,5 @@ kibana-6.3.2-darwin-x86_64.tar.gz
 Step 3) follow the ElasticSearch installation steps
 
 Step 4) follow the Kibana installation steps.
-Remember to point 
+Remember to point the elasticsearch url parameter to http://localhost:9200
 
