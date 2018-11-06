@@ -278,5 +278,94 @@ GET /business/_search/
   }
 }
 
+Step 12) The following is the query for all documents inside an index:
+GET /business/_search/
+{
+  "query": {
+    "match_all": {}
+  }
+}
+
+If you click on the wrench and on "Copy as CURL":
+$ curl -XGET "http://95.216.137.70:9200/business/_search/" -H 'Content-Type: application/json' -d'
+{
+  "query": {
+    "match_all": {}
+  }
+}'
+{"took":1,"timed_out":false,"_shards":{"total":5,"successful":5,"skipped":0,"failed":0},"hits":{"total":2,"max_score":1.0,"hits":[{"_index":"business","_type":"building","_id":"110","_score":1.0,"_source":{
+  "address": "57 New Dover Ln",
+  "floors": 10,
+  "offices": 21,
+  "loc": {
+    "lat": 40.707519,
+    "lon": -74.008560
+  }
+}
+},{"_index":"business","_type":"building","_id":"217","_score":1.0,"_source":{
+  "address": "11 Pen Av",
+  "floors": 5,
+  "offices": 7,
+  "price": 450000,
+  "loc": {
+    "lat": 40.693519,
+    "lon": -73.988560
+  }
+}
+
+Step 13) Add the ?pretty query string to curl request:
+$ curl -XGET "http://95.216.137.70:9200/business/_search/?pretty" -H 'Content-Type: application/json' -d' -d'
+{
+  "query": {
+    "match_all": {}
+  }
+}'
+{
+  "took" : 4,
+  "timed_out" : false,
+  "_shards" : {
+    "total" : 5,
+    "successful" : 5,
+    "skipped" : 0,
+    "failed" : 0
+  },
+  "hits" : {
+    "total" : 2,
+    "max_score" : 1.0,
+    "hits" : [
+      {
+        "_index" : "business",
+        "_type" : "building",
+        "_id" : "110",
+        "_score" : 1.0,
+        "_source" : {
+          "address" : "57 New Dover Ln",
+          "floors" : 10,
+          "offices" : 21,
+          "loc" : {
+            "lat" : 40.707519,
+            "lon" : -74.00856
+          }
+        }
+      },
+      {
+        "_index" : "business",
+        "_type" : "building",
+        "_id" : "217",
+        "_score" : 1.0,
+        "_source" : {
+          "address" : "11 Pen Av",
+          "floors" : 5,
+          "offices" : 7,
+          "price" : 450000,
+          "loc" : {
+            "lat" : 40.693519,
+            "lon" : -73.98856
+          }
+        }
+      }
+    ]
+  }
+}
 
 
