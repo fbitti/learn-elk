@@ -87,7 +87,7 @@ GET /vehicles/car/123
   "found": false
 }
 
-Step 7) try to reference a document id that exists but with an inexistent type:
+Step 8) try to reference a document id that exists but with an inexistent type:
 GET /vehicles/bike/124
 {
   "_index": "vehicles",
@@ -96,4 +96,12 @@ GET /vehicles/bike/124
   "found": false
 }
 
-
+Step 9) If you only want to get a document, without the metadata, use /_source:
+GET /vehicles/car/123/_source
+{
+  "make": "Honda",
+  "Color": "Black",
+  "HP": 250,
+  "mileage": 24000,
+  "price": 19300.97
+}
