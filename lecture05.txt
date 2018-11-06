@@ -165,3 +165,77 @@ GET /business
   }
 }
 
+Step 7) If you try to add a new document with a different type, you will get an error.
+Solution: create a new index for your new document.
+PUT /employees/_doc/331
+{
+  "name": "Steve Honor",
+  "title": "Attorney",
+  "salary_usd": 1400000.00,
+  "hiredate": "Oct 10, 2010"
+}
+
+Step 8) Create a new document on "contracts" index
+PUT /contracts/_doc/9987
+{
+  "name": "property renovation",
+  "date_signed": "July 26, 2010",
+  "employees_involved": [331, 330, 398]
+}
+
+Step 9) Click on Kibana's Discover tab and it will list the 3 indexes you created.
+
+Step 10) use the "/_search" endpoint to list all documents in the index
+GET /business/building/_search
+{
+  "took": 14,
+  "timed_out": false,
+  "_shards": {
+    "total": 5,
+    "successful": 5,
+    "skipped": 0,
+    "failed": 0
+  },
+  "hits": {
+    "total": 2,
+    "max_score": 1,
+    "hits": [
+      {
+        "_index": "business",
+        "_type": "building",
+        "_id": "110",
+        "_score": 1,
+        "_source": {
+          "address": "57 New Dover Ln",
+          "floors": 10,
+          "offices": 21,
+          "loc": {
+            "lat": 40.707519,
+            "lon": -74.00856
+          }
+        }
+      },
+      {
+        "_index": "business",
+        "_type": "building",
+        "_id": "217",
+        "_score": 1,
+        "_source": {
+          "address": "11 Pen Av",
+          "floors": 5,
+          "offices": 7,
+          "price": 450000,
+          "loc": {
+            "lat": 40.693519,
+            "lon": -73.98856
+          }
+        }
+      }
+    ]
+  }
+}
+
+Step 11) 
+
+
+
