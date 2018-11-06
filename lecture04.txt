@@ -139,3 +139,30 @@ Response:
   "_seq_no": 4,
   "_primary_term": 1
 }
+
+Step 12) In order to modify a specific field, use the following syntax:
+POST /vehicles/car/123/_update
+{
+  "doc": {
+    "price": 1000
+  }
+}
+
+{
+  "_index": "vehicles",
+  "_type": "car",
+  "_id": "123",
+  "_version": 6,
+  "result": "updated",
+  "_shards": {
+    "total": 2,
+    "successful": 1,
+    "failed": 0
+  },
+  "_seq_no": 5,
+  "_primary_term": 1
+}
+
+Note: when testing, "/_update" is not necessary and Kibana updates the document anyway.
+
+
