@@ -163,6 +163,39 @@ POST /vehicles/car/123/_update
   "_primary_term": 1
 }
 
-Note: when testing, "/_update" is not necessary and Kibana updates the document anyway.
+Step 13) In order to add a new field to the document, simply update it with the new field.
+POST /vehicles/car/123/_update
+{
+  "doc": {
+    "driver": "Tom"
+  }
+}
+
+{
+  "_index": "vehicles",
+  "_type": "car",
+  "_id": "123",
+  "_version": 11,
+  "result": "updated",
+  "_shards": {
+    "total": 2,
+    "successful": 1,
+    "failed": 0
+  },
+  "_seq_no": 10,
+  "_primary_term": 1
+}
+
+GET /vehicles/car/123/_source
+{
+  "make": "Honda",
+  "Color": "blue",
+  "HP": 250,
+  "mileage": 19000,
+  "price": 1000,
+  "driver": "Tom"
+}
+
+
 
 
