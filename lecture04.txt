@@ -109,7 +109,33 @@ GET /vehicles/car/123/_source
 Step 10) If you only want to check whether a document exists use the HEAD command:
 HEAD /vehicles/car/123
 200 - OK
-
 or:
 HEAD /vehicles/car/124
 404 - Not Found
+
+
+Step 11) To change any field, resubmit the entire document:
+PUT /vehicles/car/123
+{
+  "make": "Honda",
+  "Color": "blue",
+  "HP": 250,
+  "mileage": 19000,
+  "price": 19300.97
+}
+
+Response:
+{
+  "_index": "vehicles",
+  "_type": "car",
+  "_id": "123",
+  "_version": 5,
+  "result": "updated",
+  "_shards": {
+    "total": 2,
+    "successful": 1,
+    "failed": 0
+  },
+  "_seq_no": 4,
+  "_primary_term": 1
+}
