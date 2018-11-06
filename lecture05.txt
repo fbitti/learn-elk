@@ -1,4 +1,84 @@
 Components of an index
  - Mappings and Settings
  
- 
+Step 1) Before creating an index, make sure it does not exist.
+
+Step 2) Create the "business" index, with type "building" and its first document 110
+PUT business/building/110
+{
+  "address": "57 New Dover Ln",
+  "floors": 10,
+  "offices": 21,
+  "loc": {
+    "lat": 40.707519,
+    "lon": -74.008560
+  }
+}
+
+#! Deprecation: the default number of shards will change from [5] to [1] in 7.0.0; if you wish to continue using the default of [5] shards, you must manage this on the create index request or with an index template
+{
+  "_index": "business",
+  "_type": "building",
+  "_id": "110",
+  "_version": 1,
+  "result": "created",
+  "_shards": {
+    "total": 2,
+    "successful": 1,
+    "failed": 0
+  },
+  "_seq_no": 0,
+  "_primary_term": 1
+}
+
+Step 3) GET the structure of the "business" index
+GET /business
+
+{
+  "business": {
+    "aliases": {},
+    "mappings": {
+      "building": {
+        "properties": {
+          "address": {
+            "type": "text",
+            "fields": {
+              "keyword": {
+                "type": "keyword",
+                "ignore_above": 256
+              }
+            }
+          },
+          "floors": {
+            "type": "long"
+          },
+          "loc": {
+            "properties": {
+              "lat": {
+                "type": "float"
+              },
+              "lon": {
+                "type": "float"
+              }
+            }
+          },
+          "offices": {
+            "type": "long"
+          }
+        }
+      }
+    },
+    "settings": {
+      "index": {
+        "creation_date": "1541528026880",
+        "number_of_shards": "5",
+        "number_of_replicas": "1",
+        "uuid": "UvmfXP_CQLunxQzOw7DetQ",
+        "version": {
+          "created": "6040299"
+        },
+        "provided_name": "business"
+      }
+    }
+  }
+}
