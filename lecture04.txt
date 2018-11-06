@@ -78,7 +78,7 @@ GET /vehicles/car/123
   }
 }
 
-Step 7) try to reference a document that does not exist
+Step 7) try to reference a document id that does not exist
 GET /vehicles/car/123
 {
   "_index": "vehicles",
@@ -86,3 +86,14 @@ GET /vehicles/car/123
   "_id": "124",
   "found": false
 }
+
+Step 7) try to reference a document id that exists but with an inexistent type:
+GET /vehicles/bike/124
+{
+  "_index": "vehicles",
+  "_type": "bike",
+  "_id": "124",
+  "found": false
+}
+
+
