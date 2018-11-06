@@ -105,3 +105,11 @@ GET /vehicles/car/123/_source
   "mileage": 24000,
   "price": 19300.97
 }
+
+Step 10) If you only want to check whether a document exists use the HEAD command:
+HEAD /vehicles/car/123
+200 - OK
+
+or:
+HEAD /vehicles/car/124
+404 - Not Found
