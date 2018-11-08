@@ -1,0 +1,109 @@
+Index Settings and Mappings (part 1)
+
+Step 1) check whether the customers index exists
+HEAD customers
+
+404 - Not Found
+
+Step 2) Create the structure of this index
+PUT /customers
+{
+  "settings": {
+    "number_of_shards": 2,
+    "number_of_replicas": 1
+  },
+  "mappings": {}
+}
+
+{
+  "acknowledged": true,
+  "shards_acknowledged": true,
+  "index": "customers"
+}
+
+Step 3) check the structure
+GET /customers
+
+{
+  "customers": {
+    "aliases": {},
+    "mappings": {},
+    "settings": {
+      "index": {
+        "creation_date": "1541715495045",
+        "number_of_shards": "2",
+        "number_of_replicas": "1",
+        "uuid": "hdd6Gwi-RrGCoU1Xoo46DA",
+        "version": {
+          "created": "6040299"
+        },
+        "provided_name": "customers"
+      }
+    }
+  }
+}
+
+Step 4) let's define the mappings, which tells what are the fields in the documents and their types
+PUT /customers
+{
+  "mappings": {
+    "online": {
+      "properties": {
+        "gender": {
+          "type": "text",
+          "analyzer": "standard"
+        },
+        "age": {
+          "type": "integer"
+        },
+        "total_spent": {
+          "type": "float"
+        },
+        "is_new": {
+          "type": "boolean"
+        },
+        "name": {
+          "type": "text",
+          "analyzer": "standard"
+        }
+      }
+    }
+  },
+  "settings": {
+    "number_of_shards": 2,
+    "number_of_replicas": 1  
+  }
+}
+
+{
+  "error": {
+    "root_cause": [
+      {
+        "type": "resource_already_exists_exception",
+        "reason": "index [customers/hdd6Gwi-RrGCoU1Xoo46DA] already exists",
+        "index_uuid": "hdd6Gwi-RrGCoU1Xoo46DA",
+        "index": "customers"
+      }
+    ],
+    "type": "resource_already_exists_exception",
+    "reason": "index [customers/hdd6Gwi-RrGCoU1Xoo46DA] already exists",
+    "index_uuid": "hdd6Gwi-RrGCoU1Xoo46DA",
+    "index": "customers"
+  },
+  "status": 400
+}
+
+This error is because we already defined a structure.
+We must delete the index before resubmitting a new structure.
+DELETE /customers
+{
+  "acknowledged": true
+}
+
+This is now the response after PUT the new /customers structure:
+{
+  "acknowledged": true,
+  "shards_acknowledged": true,
+  "index": "customers"
+}
+
