@@ -1,0 +1,13 @@
+Text Analysis for Indexing and Searching
+- Remove stop words
+- Lowercasing
+- Stemming (get to the root of the word)
+- Synonyms
+
+Indexing:
+- go through the Analyser, which:
+#1 tokenizes
+#2 filter
+
+Configure the Index Structure: settings and mappings
+
