@@ -1,0 +1,31 @@
+Index Settings and Mappings (part 2)
+
+Step 1) add a new document with a field (address) which is not part of the structure
+PUT /customers/online/124
+{
+  "name": "Mary Cranford",
+  "address": "310 Clark Ave",
+  "gender": "female",
+  "age": 34,
+  "total_spent": 550.75,
+  "is_new": false
+}
+
+{
+  "_index": "customers",
+  "_type": "online",
+  "_id": "124",
+  "_version": 1,
+  "result": "created",
+  "_shards": {
+    "total": 2,
+    "successful": 1,
+    "failed": 0
+  },
+  "_seq_no": 0,
+  "_primary_term": 1
+}
+
+Elasticsearch does not get in our way, it figures out what the appropriate data type should be and indexes it properly.
+
+
