@@ -53,4 +53,8 @@ if (hash.length) {
 }</script>
 
 
+
+Note: check and publish this alternative
+$ docker run -d --name elasticsearch -e "discovery.type=single-node" docker.elastic.co/elasticsearch/elasticsearch:6.4.2
+$ docker run -d --link "elasticsearch:elasticsearch" -p 5601:5601  docker.elastic.co/kibana/kibana:6.4.2
   
