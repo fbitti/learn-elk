@@ -1,3 +1,6 @@
 Distributed Execution of Requests
 - behind the scenes
 
+Elasticsearch indexes are stored in shards.
+Multiple Elasticsearch instances in different nodes may work together as a cluster.
+
