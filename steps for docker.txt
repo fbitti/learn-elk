@@ -58,3 +58,56 @@ Note: check and publish this alternative
 $ docker run -d --name elasticsearch -e "discovery.type=single-node" docker.elastic.co/elasticsearch/elasticsearch:6.4.2
 $ docker run -d --link "elasticsearch:elasticsearch" -p 5601:5601  docker.elastic.co/kibana/kibana:6.4.2
   
+$ $ docker network inspect bridge
+[
+    {
+        "Name": "bridge",
+        "Id": "abfadc2da70761c504878e7031c513caf71b4ce9052dc78c6a459de758e5cce8",
+        "Created": "2018-10-12T19:43:23.402133616Z",
+        "Scope": "local",
+        "Driver": "bridge",
+        "EnableIPv6": false,
+        "IPAM": {
+            "Driver": "default",
+            "Options": null,
+            "Config": [
+                {
+                    "Subnet": "172.17.0.0/16",
+                    "Gateway": "172.17.0.1"
+                }
+            ]
+        },
+        "Internal": false,
+        "Attachable": false,
+        "Ingress": false,
+        "ConfigFrom": {
+            "Network": ""
+        },
+        "ConfigOnly": false,
+        "Containers": {
+            "2fb0d212ba72c330750c234969e6b31750a4ac63bc1de8dda642b62225368b7c": {
+                "Name": "elasticsearch",
+                "EndpointID": "6dfa4bd39ba3870615f2aeb6d1ac5dc45949a4165dcdbe0df02d0e663b1b4da1",
+                "MacAddress": "02:42:ac:11:00:02",
+                "IPv4Address": "172.17.0.2/16",
+                "IPv6Address": ""
+            },
+            "52e6f5406159ee399ed2b59a4540e2cd68c0c1351ec89eab0ca69064c369723d": {
+                "Name": "kibana",
+                "EndpointID": "912217e5d01dfa24084df3867e244ab446f0eda205f5f12313e75b1878ba87c0",
+                "MacAddress": "02:42:ac:11:00:03",
+                "IPv4Address": "172.17.0.3/16",
+                "IPv6Address": ""
+            }
+        },
+        "Options": {
+            "com.docker.network.bridge.default_bridge": "true",
+            "com.docker.network.bridge.enable_icc": "true",
+            "com.docker.network.bridge.enable_ip_masquerade": "true",
+            "com.docker.network.bridge.host_binding_ipv4": "0.0.0.0",
+            "com.docker.network.bridge.name": "docker0",
+            "com.docker.network.driver.mtu": "1500"
+        },
+        "Labels": {}
+    }
+]  
