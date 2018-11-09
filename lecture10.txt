@@ -401,3 +401,117 @@ PUT /courses/classroom/7
   "result": "updated",
 ....
 
+Surprisingly, the relevancy score is still lower for this document:
+GET /courses/_search
+{
+  "query": {
+    "match": {
+      "name": "computer"
+    }
+  }
+}
+
+{
+....
+  "hits": {
+    "total": 2,
+    "max_score": 0.9331132,
+    "hits": [
+      {
+        "_index": "courses",
+        "_type": "classroom",
+        "_id": "4",
+        "_score": 0.9331132,
+        "_source": {
+          "name": "Computer Science 101",
+
+....
+
+      {
+        "_index": "courses",
+        "_type": "classroom",
+        "_id": "7",
+        "_score": 0.90232176,
+        "_source": {
+          "name": "Computer computer 250",
+
+....
+
+Step 5) Search all documents which have an email field:
+First reindex a document and get rid of the email field.
+PUT /courses/classroom/5
+{
+    "name": "Theatre 410",
+    "room": "T18",
+    "professor": {
+        "name": "Sebastian Hern",
+        "department": "art",
+        "facutly_type": "part-time"
+        },
+    "students_enrolled": 47,
+    "course_publish_date": "2013-01-27",
+    "course_description": "Tht 410 is an advanced elective course disecting the various plays written by shakespere during the 16th century"
+}
+
+....
+  "_version": 2,
+  "result": "updated",
+....
+
+Now search for all documents with an email field.
+GET /courses/_search
+{
+  "query": {
+    "exists": {
+      "field": "professor.email"
+    }
+  }
+}
+
+....
+  "hits": {
+    "total": 9,
+....
+
+Step 6) Search simultaneous matches on multiple fields:
+GET /courses/_search
+{
+  "query": {
+    "bool": {
+      "must": [
+        {"match": {"name": "computer"}},
+        {"match": {"room": "c8"}}
+      ]
+    }
+  }
+}
+
+....
+  "hits": {
+    "total": 1,
+    "max_score": 1.595469,
+    "hits": [
+      {
+        "_index": "courses",
+        "_type": "classroom",
+        "_id": "7",
+        "_score": 1.595469,
+        "_source": {
+          "name": "Computer Computer 250",
+          "room": "C8",
+          "professor": {
+            "name": "Gregg Payne",
+            "department": "engineering",
+            "facutly_type": "part-time",
+            "email": "payneg@onuni.com"
+          },
+          "students_enrolled": 33,
+          "course_publish_date": "2012-08-20",
+          "course_description": "cpt Int 250 gives students an integrated and rigorous picture of applied computer science, as it comes to play in the construction of a simple yet powerful computer system. "
+        }
+      }
+    ]
+  }
+}
+
+
