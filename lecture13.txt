@@ -1,2 +1,393 @@
 Aggregations (part 1)
 
+Step 1) get all the documents in this index.
+By default, Elasticsearch only returns the top 10 documents.
+
+GET /vehicles/cars/_search
+{
+  "query": {
+    "match_all": {}
+  }
+}
+
+{
+  "took": 6,
+  "timed_out": false,
+  "_shards": {
+    "total": 5,
+    "successful": 5,
+    "skipped": 0,
+    "failed": 0
+  },
+  "hits": {
+    "total": 16,
+    "max_score": 1,
+    "hits": [
+      {
+        "_index": "vehicles",
+        "_type": "cars",
+        "_id": "9VEu-mYBC46YeeqoC_TT",
+        "_score": 1,
+        "_source": {
+          "price": 10000,
+          "color": "white",
+          "make": "honda",
+          "sold": "2016-10-28",
+          "condition": "okay"
+        }
+      },
+      {
+        "_index": "vehicles",
+        "_type": "cars",
+        "_id": "-lEu-mYBC46YeeqoC_TT",
+        "_score": 1,
+        "_source": {
+          "price": 18000,
+          "color": "red",
+          "make": "dodge",
+          "sold": "2016-11-05",
+          "condition": "good"
+        }
+      },
+      {
+        "_index": "vehicles",
+        "_type": "cars",
+        "_id": "_1Eu-mYBC46YeeqoC_TT",
+        "_score": 1,
+        "_source": {
+          "price": 20000,
+          "color": "red",
+          "make": "chevrolet",
+          "sold": "2016-08-15",
+          "condition": "good"
+        }
+      },
+      {
+        "_index": "vehicles",
+        "_type": "cars",
+        "_id": "AFEu-mYBC46YeeqoC_XT",
+        "_score": 1,
+        "_source": {
+          "price": 13000,
+          "color": "gray",
+          "make": "chevrolet",
+          "sold": "2016-11-20",
+          "condition": "okay"
+        }
+      },
+      {
+        "_index": "vehicles",
+        "_type": "cars",
+        "_id": "-VEu-mYBC46YeeqoC_TT",
+        "_score": 1,
+        "_source": {
+          "price": 12000,
+          "color": "green",
+          "make": "toyota",
+          "sold": "2016-08-19",
+          "condition": "good"
+        }
+      },
+      {
+        "_index": "vehicles",
+        "_type": "cars",
+        "_id": "_VEu-mYBC46YeeqoC_TT",
+        "_score": 1,
+        "_source": {
+          "price": 10000,
+          "color": "gray",
+          "make": "dodge",
+          "sold": "2016-02-12",
+          "condition": "okay"
+        }
+      },
+      {
+        "_index": "vehicles",
+        "_type": "cars",
+        "_id": "BFEu-mYBC46YeeqoC_XT",
+        "_score": 1,
+        "_source": {
+          "price": 30000,
+          "color": "gray",
+          "make": "bmw",
+          "sold": "2016-11-20",
+          "condition": "good"
+        }
+      },
+      {
+        "_index": "vehicles",
+        "_type": "cars",
+        "_id": "9lEu-mYBC46YeeqoC_TT",
+        "_score": 1,
+        "_source": {
+          "price": 20000,
+          "color": "white",
+          "make": "honda",
+          "sold": "2016-11-05",
+          "condition": "new"
+        }
+      },
+      {
+        "_index": "vehicles",
+        "_type": "cars",
+        "_id": "_FEu-mYBC46YeeqoC_TT",
+        "_score": 1,
+        "_source": {
+          "price": 25000,
+          "color": "blue",
+          "make": "ford",
+          "sold": "2016-08-22",
+          "condition": "new"
+        }
+      },
+      {
+        "_index": "vehicles",
+        "_type": "cars",
+        "_id": "-FEu-mYBC46YeeqoC_TT",
+        "_score": 1,
+        "_source": {
+          "price": 15000,
+          "color": "blue",
+          "make": "toyota",
+          "sold": "2016-07-02",
+          "condition": "good"
+        }
+      }
+    ]
+  }
+}
+
+Step 2) In order to see all the 16 documents, use the size parameter with a bigger number.
+
+GET /vehicles/cars/_search
+{
+  "size": 20,
+  "query": {
+    "match_all": {}
+  }
+}
+
+{
+  "took": 2,
+  "timed_out": false,
+  "_shards": {
+    "total": 5,
+    "successful": 5,
+    "skipped": 0,
+    "failed": 0
+  },
+  "hits": {
+    "total": 16,
+    "max_score": 1,
+    "hits": [
+      {
+        "_index": "vehicles",
+        "_type": "cars",
+        "_id": "9VEu-mYBC46YeeqoC_TT",
+        "_score": 1,
+        "_source": {
+          "price": 10000,
+          "color": "white",
+          "make": "honda",
+          "sold": "2016-10-28",
+          "condition": "okay"
+        }
+      },
+      {
+        "_index": "vehicles",
+        "_type": "cars",
+        "_id": "-lEu-mYBC46YeeqoC_TT",
+        "_score": 1,
+        "_source": {
+          "price": 18000,
+          "color": "red",
+          "make": "dodge",
+          "sold": "2016-11-05",
+          "condition": "good"
+        }
+      },
+      {
+        "_index": "vehicles",
+        "_type": "cars",
+        "_id": "_1Eu-mYBC46YeeqoC_TT",
+        "_score": 1,
+        "_source": {
+          "price": 20000,
+          "color": "red",
+          "make": "chevrolet",
+          "sold": "2016-08-15",
+          "condition": "good"
+        }
+      },
+      {
+        "_index": "vehicles",
+        "_type": "cars",
+        "_id": "AFEu-mYBC46YeeqoC_XT",
+        "_score": 1,
+        "_source": {
+          "price": 13000,
+          "color": "gray",
+          "make": "chevrolet",
+          "sold": "2016-11-20",
+          "condition": "okay"
+        }
+      },
+      {
+        "_index": "vehicles",
+        "_type": "cars",
+        "_id": "-VEu-mYBC46YeeqoC_TT",
+        "_score": 1,
+        "_source": {
+          "price": 12000,
+          "color": "green",
+          "make": "toyota",
+          "sold": "2016-08-19",
+          "condition": "good"
+        }
+      },
+      {
+        "_index": "vehicles",
+        "_type": "cars",
+        "_id": "_VEu-mYBC46YeeqoC_TT",
+        "_score": 1,
+        "_source": {
+          "price": 10000,
+          "color": "gray",
+          "make": "dodge",
+          "sold": "2016-02-12",
+          "condition": "okay"
+        }
+      },
+      {
+        "_index": "vehicles",
+        "_type": "cars",
+        "_id": "BFEu-mYBC46YeeqoC_XT",
+        "_score": 1,
+        "_source": {
+          "price": 30000,
+          "color": "gray",
+          "make": "bmw",
+          "sold": "2016-11-20",
+          "condition": "good"
+        }
+      },
+      {
+        "_index": "vehicles",
+        "_type": "cars",
+        "_id": "9lEu-mYBC46YeeqoC_TT",
+        "_score": 1,
+        "_source": {
+          "price": 20000,
+          "color": "white",
+          "make": "honda",
+          "sold": "2016-11-05",
+          "condition": "new"
+        }
+      },
+      {
+        "_index": "vehicles",
+        "_type": "cars",
+        "_id": "_FEu-mYBC46YeeqoC_TT",
+        "_score": 1,
+        "_source": {
+          "price": 25000,
+          "color": "blue",
+          "make": "ford",
+          "sold": "2016-08-22",
+          "condition": "new"
+        }
+      },
+      {
+        "_index": "vehicles",
+        "_type": "cars",
+        "_id": "-FEu-mYBC46YeeqoC_TT",
+        "_score": 1,
+        "_source": {
+          "price": 15000,
+          "color": "blue",
+          "make": "toyota",
+          "sold": "2016-07-02",
+          "condition": "good"
+        }
+      },
+      {
+        "_index": "vehicles",
+        "_type": "cars",
+        "_id": "-1Eu-mYBC46YeeqoC_TT",
+        "_score": 1,
+        "_source": {
+          "price": 80000,
+          "color": "red",
+          "make": "bmw",
+          "sold": "2016-01-01",
+          "condition": "new"
+        }
+      },
+      {
+        "_index": "vehicles",
+        "_type": "cars",
+        "_id": "AVEu-mYBC46YeeqoC_XT",
+        "_score": 1,
+        "_source": {
+          "price": 12500,
+          "color": "gray",
+          "make": "dodge",
+          "sold": "2016-03-09",
+          "condition": "okay"
+        }
+      },
+      {
+        "_index": "vehicles",
+        "_type": "cars",
+        "_id": "AlEu-mYBC46YeeqoC_XT",
+        "_score": 1,
+        "_source": {
+          "price": 35000,
+          "color": "red",
+          "make": "dodge",
+          "sold": "2016-04-10",
+          "condition": "new"
+        }
+      },
+      {
+        "_index": "vehicles",
+        "_type": "cars",
+        "_id": "A1Eu-mYBC46YeeqoC_XT",
+        "_score": 1,
+        "_source": {
+          "price": 28000,
+          "color": "blue",
+          "make": "chevrolet",
+          "sold": "2016-08-15",
+          "condition": "new"
+        }
+      },
+      {
+        "_index": "vehicles",
+        "_type": "cars",
+        "_id": "91Eu-mYBC46YeeqoC_TT",
+        "_score": 1,
+        "_source": {
+          "price": 30000,
+          "color": "green",
+          "make": "ford",
+          "sold": "2016-05-18",
+          "condition": "new"
+        }
+      },
+      {
+        "_index": "vehicles",
+        "_type": "cars",
+        "_id": "_lEu-mYBC46YeeqoC_TT",
+        "_score": 1,
+        "_source": {
+          "price": 19000,
+          "color": "red",
+          "make": "dodge",
+          "sold": "2016-02-12",
+          "condition": "good"
+        }
+      }
+    ]
+  }
+}
