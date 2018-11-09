@@ -724,4 +724,169 @@ GET /vehicles/cars/_search
   }
 }
 
-Step 8) 
+Step 8) Additionally, let me know the highest price per brand.
+GET /vehicles/cars/_search
+{
+  "aggs": {
+    "popular_cars": {
+      "terms": {
+        "field": "make.keyword"
+      },
+      "aggs": {
+        "avg_price": {
+          "avg": {
+            "field": "price"
+          }
+        },
+        "max_price": {
+          "max": {
+            "field": "price"
+          }
+        }
+      }
+    }
+  }
+}
+
+....
+  "aggregations": {
+    "popular_cars": {
+      "doc_count_error_upper_bound": 0,
+      "sum_other_doc_count": 0,
+      "buckets": [
+        {
+          "key": "dodge",
+          "doc_count": 5,
+          "max_price": {
+            "value": 35000
+          },
+          "avg_price": {
+            "value": 18900
+          }
+        },
+        {
+          "key": "chevrolet",
+          "doc_count": 3,
+          "max_price": {
+            "value": 28000
+          },
+          "avg_price": {
+            "value": 20333.333333333332
+          }
+        },
+        {
+          "key": "bmw",
+          "doc_count": 2,
+          "max_price": {
+            "value": 80000
+          },
+          "avg_price": {
+            "value": 55000
+          }
+        },
+        {
+          "key": "ford",
+          "doc_count": 2,
+          "max_price": {
+            "value": 30000
+          },
+          "avg_price": {
+            "value": 27500
+          }
+        },
+        {
+          "key": "honda",
+          "doc_count": 2,
+          "max_price": {
+            "value": 20000
+          },
+          "avg_price": {
+            "value": 15000
+          }
+        },
+        {
+          "key": "toyota",
+          "doc_count": 2,
+          "max_price": {
+            "value": 15000
+          },
+          "avg_price": {
+            "value": 13500
+          }
+        }
+      ]
+    }
+  }
+}
+
+Step 9) OK, give the same metrics as before, but only for red cars.
+GET /vehicles/cars/_search
+{
+  "query": {
+    "match": {
+      "color": "red"
+    }
+  }, 
+  "aggs": {
+    "popular_cars": {
+      "terms": {
+        "field": "make.keyword"
+      },
+      "aggs": {
+        "avg_price": {
+          "avg": {
+            "field": "price"
+          }
+        },
+        "max_price": {
+          "max": {
+            "field": "price"
+          }
+        }
+      }
+    }
+  }
+}
+
+....
+  "aggregations": {
+    "popular_cars": {
+      "doc_count_error_upper_bound": 0,
+      "sum_other_doc_count": 0,
+      "buckets": [
+        {
+          "key": "dodge",
+          "doc_count": 3,
+          "max_price": {
+            "value": 35000
+          },
+          "avg_price": {
+            "value": 24000
+          }
+        },
+        {
+          "key": "bmw",
+          "doc_count": 1,
+          "max_price": {
+            "value": 80000
+          },
+          "avg_price": {
+            "value": 80000
+          }
+        },
+        {
+          "key": "chevrolet",
+          "doc_count": 1,
+          "max_price": {
+            "value": 20000
+          },
+          "avg_price": {
+            "value": 20000
+          }
+        }
+      ]
+    }
+  }
+}
+
+Step 10) 
