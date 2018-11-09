@@ -1,0 +1,3 @@
+Search DSL Filter Context
+- DSL stands for Domain Specific Language
+
