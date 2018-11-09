@@ -273,4 +273,229 @@ GET /courses/_search
   }
 }
 
-Step 6) 
+Step 6) Play with range queries
+GET /courses/_search
+{
+  "query": {
+    "range": {
+      "students_enrolled": {
+        "gt": 10,
+        "lte": 20
+      }
+    }
+  }
+}
+
+....
+  "hits": {
+    "total": 4,
+    "max_score": 1,
+    "hits": [
+      {
+        "_index": "courses",
+        "_type": "classroom",
+        "_id": "8",
+        "_score": 1,
+        "_source": {
+          "name": "Accounting Info Systems 350",
+          "room": "E3",
+          "professor": {
+            "name": "Bill Cage",
+            "department": "accounting",
+            "facutly_type": "full-time",
+            "email": "cageb@onuni.com"
+          },
+          "students_enrolled": 19,
+          "course_publish_date": "2014-05-15",
+          "course_description": "Act Sys 350 is an advanced course providing students a practical understanding of an accounting system in database technology. Students will use MS Access to build a transaction ledger system"
+        }
+      },
+      {
+        "_index": "courses",
+        "_type": "classroom",
+        "_id": "9",
+        "_score": 1,
+        "_source": {
+          "name": "Tax Accounting 200",
+          "room": "E7",
+          "professor": {
+            "name": "Thomas Baszo",
+            "department": "finance",
+            "facutly_type": "part-time",
+            "email": "baszot@onuni.com"
+          },
+          "students_enrolled": 17,
+          "course_publish_date": "2016-06-15",
+          "course_description": "Tax Act 200 is an intermediate course covering various aspects of tax law"
+        }
+      },
+      {
+        "_index": "courses",
+        "_type": "classroom",
+        "_id": "10",
+        "_score": 1,
+        "_source": {
+          "name": "Capital Markets 350",
+          "room": "E3",
+          "professor": {
+            "name": "Thomas Baszo",
+            "department": "finance",
+            "facutly_type": "part-time",
+            "email": "baszot@onuni.com"
+          },
+          "students_enrolled": 13,
+          "course_publish_date": "2016-01-11",
+          "course_description": "This is an advanced course teaching crucial topics related to raising capital and bonds, shares and other long-term equity and debt financial instrucments"
+        }
+      },
+      {
+        "_index": "courses",
+        "_type": "classroom",
+        "_id": "2",
+        "_score": 1,
+        "_source": {
+          "name": "Marketing 101",
+          "room": "E4",
+          "professor": {
+            "name": "William Smith",
+            "department": "finance",
+            "facutly_type": "part-time",
+            "email": "wills@onuni.com"
+          },
+          "students_enrolled": 18,
+          "course_publish_date": "2015-06-21",
+          "course_description": "Mkt 101 is a course from the business school on the introduction to marketing that teaches students the fundamentals of market analysis, customer retention and online advertisements"
+        }
+      }
+    ]
+  }
+}
+
+Step 7) Ranges also work with dates
+GET /courses/_search
+{
+  "query": {
+    "range": {
+      "course_publish_date": {
+        "gt": "2015-08-01"
+      }
+    }
+  }
+}
+
+....
+  "hits": {
+    "total": 2,
+    "max_score": 1,
+    "hits": [
+      {
+        "_index": "courses",
+        "_type": "classroom",
+        "_id": "9",
+        "_score": 1,
+        "_source": {
+          "name": "Tax Accounting 200",
+          "room": "E7",
+          "professor": {
+            "name": "Thomas Baszo",
+            "department": "finance",
+            "facutly_type": "part-time",
+            "email": "baszot@onuni.com"
+          },
+          "students_enrolled": 17,
+          "course_publish_date": "2016-06-15",
+          "course_description": "Tax Act 200 is an intermediate course covering various aspects of tax law"
+        }
+      },
+      {
+        "_index": "courses",
+        "_type": "classroom",
+        "_id": "10",
+        "_score": 1,
+        "_source": {
+          "name": "Capital Markets 350",
+          "room": "E3",
+          "professor": {
+            "name": "Thomas Baszo",
+            "department": "finance",
+            "facutly_type": "part-time",
+            "email": "baszot@onuni.com"
+          },
+          "students_enrolled": 13,
+          "course_publish_date": "2016-01-11",
+          "course_description": "This is an advanced course teaching crucial topics related to raising capital and bonds, shares and other long-term equity and debt financial instrucments"
+        }
+      }
+    ]
+  }
+}
+
+Step 8) Combine again "must", "must_not" and "should".
+"Should" is not an enforcement, but increases the resulting relevance score.
+GET /courses/_search
+{
+  "query": {
+    "bool": {
+      "must": [
+        {"match": {"name": "accounting"}}
+      ],
+      "must_not": [
+        {"match": {"room": "e7"}}
+      ],
+      "should": [
+        {"range": {"students_enrolled": {
+            "gte": 10,
+            "lte": 20 }}}
+      ],
+      "minimum_should_match": 1
+    }
+  }
+}
+
+....
+  "hits": {
+    "total": 2,
+    "max_score": 1.6099695,
+    "hits": [
+      {
+        "_index": "courses",
+        "_type": "classroom",
+        "_id": "8",
+        "_score": 1.6099695,
+        "_source": {
+          "name": "Accounting Info Systems 350",
+          "room": "E3",
+          "professor": {
+            "name": "Bill Cage",
+            "department": "accounting",
+            "facutly_type": "full-time",
+            "email": "cageb@onuni.com"
+          },
+          "students_enrolled": 19,
+          "course_publish_date": "2014-05-15",
+          "course_description": "Act Sys 350 is an advanced course providing students a practical understanding of an accounting system in database technology. Students will use MS Access to build a transaction ledger system"
+        }
+      },
+      {
+        "_index": "courses",
+        "_type": "classroom",
+        "_id": "1",
+        "_score": 0.7549128,
+        "_source": {
+          "name": "Accounting 101",
+          "room": "E3",
+          "professor": {
+            "name": "Thomas Baszo",
+            "department": "finance",
+            "facutly_type": "part-time",
+            "email": "baszot@onuni.com"
+          },
+          "students_enrolled": 27,
+          "course_publish_date": "2015-01-19",
+          "course_description": "Act 101 is a course from the business school on the introduction to accounting that teaches students how to read and compose basic financial statements"
+        }
+      }
+    ]
+  }
+}
+
