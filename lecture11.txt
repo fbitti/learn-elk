@@ -499,3 +499,11 @@ GET /courses/_search
   }
 }
 
+Without the "should" clause, the relevancy scores become:
+        "_id": "1",
+        "_score": 0.7549128,
+        
+        and
+        
+        "_id": "8",
+        "_score": 0.6099695,
