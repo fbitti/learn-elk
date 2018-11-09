@@ -219,3 +219,200 @@ GET /courses/_search
     ]
   }
 }
+
+
+Step 4) matches outside the "filter" object will cause the results to be scored against these elements.
+GET /courses/_search
+{
+  "query": {
+    "bool": {
+      "filter": {
+        "bool": {
+          "must": [
+            {"match": {"name": "accounting"}},
+            {"match": {"professor.name": "bill"}}
+          ]
+        }
+      },
+      "must": [
+        {"match": {"room": "e3"}}
+      ]
+    }
+  }
+}
+
+....
+  "hits": {
+    "total": 1,
+    "max_score": 0.6931472,
+    "hits": [
+      {
+        "_index": "courses",
+        "_type": "classroom",
+        "_id": "8",
+        "_score": 0.6931472,
+        "_source": {
+          "name": "Accounting Info Systems 350",
+          "room": "E3",
+          "professor": {
+            "name": "Bill Cage",
+            "department": "accounting",
+            "facutly_type": "full-time",
+            "email": "cageb@onuni.com"
+          },
+          "students_enrolled": 19,
+          "course_publish_date": "2014-05-15",
+          "course_description": "Act Sys 350 is an advanced course providing students a practical understanding of an accounting system in database technology. Students will use MS Access to build a transaction ledger system"
+        }
+      }
+    ]
+  }
+}
+
+Step 5) ranges are also allowed inside filters
+GET /courses/_search
+{
+  "query": {
+    "bool": {
+      "filter": {
+        "bool": {
+          "must": [
+            {"range": {
+              "students_enrolled": {
+                "gte": 25             
+              }
+            }}
+          ]
+        }
+      },
+      "should": [
+        {"match": {"room": "e3"}}
+      ]
+    }
+  }
+}
+
+....
+  "hits": {
+    "total": 5,
+    "max_score": 0.6931472,
+    "hits": [
+      {
+        "_index": "courses",
+        "_type": "classroom",
+        "_id": "1",
+        "_score": 0.6931472,
+        "_source": {
+          "name": "Accounting 101",
+          "room": "E3",
+          "professor": {
+            "name": "Thomas Baszo",
+            "department": "finance",
+            "facutly_type": "part-time",
+            "email": "baszot@onuni.com"
+          },
+          "students_enrolled": 27,
+          "course_publish_date": "2015-01-19",
+          "course_description": "Act 101 is a course from the business school on the introduction to accounting that teaches students how to read and compose basic financial statements"
+        }
+      },
+      {
+        "_index": "courses",
+        "_type": "classroom",
+        "_id": "5",
+        "_score": 0,
+        "_source": {
+          "name": "Theatre 410",
+          "room": "T18",
+          "professor": {
+            "name": "Sebastian Hern",
+            "department": "art",
+            "facutly_type": "part-time"
+          },
+          "students_enrolled": 47,
+          "course_publish_date": "2013-01-27",
+          "course_description": "Tht 410 is an advanced elective course disecting the various plays written by shakespere during the 16th century"
+        }
+      },
+....
+
+Step 6) Boost the score on a multi_match search outside the filter (notice the ^ followed by a number)
+GET /courses/_search
+{
+  "query": {
+    "bool": {
+      "filter": {
+        "bool": {
+          "must": [
+            {"range": {
+              "students_enrolled": {
+                "gte": 25             
+              }
+            }}
+          ]
+        }
+      },
+      "should": [
+        {"match": {"room": "e3"}},
+        {"multi_match": {
+          "query": "business",
+          "fields": ["name", "course_description^5"]
+        }}
+      ]
+    }
+  }
+}
+
+....
+  "hits": {
+    "total": 5,
+    "max_score": 4.2671876,
+    "hits": [
+      {
+        "_index": "courses",
+        "_type": "classroom",
+        "_id": "1",
+        "_score": 4.2671876,
+        "_source": {
+          "name": "Accounting 101",
+          "room": "E3",
+          "professor": {
+            "name": "Thomas Baszo",
+            "department": "finance",
+            "facutly_type": "part-time",
+            "email": "baszot@onuni.com"
+          },
+          "students_enrolled": 27,
+          "course_publish_date": "2015-01-19",
+          "course_description": "Act 101 is a course from the business school on the introduction to accounting that teaches students how to read and compose basic financial statements"
+        }
+      },
+      {
+        "_index": "courses",
+        "_type": "classroom",
+        "_id": "6",
+        "_score": 2.9909322,
+        "_source": {
+          "name": "Cost Accounting 400",
+          "room": "E7",
+          "professor": {
+            "name": "Bill Cage",
+            "department": "accounting",
+            "facutly_type": "full-time",
+            "email": "cageb@onuni.com"
+          },
+          "students_enrolled": 31,
+          "course_publish_date": "2014-12-31",
+          "course_description": "Cst Act 400 is an advanced course from the business school taken by final year accounting majors that covers the subject of business incurred costs and how to record them in financial statements"
+        }
+      },
+....
+
+Without the caret:
+        "_id": "1",
+        "_score": 1.4079552,
+
+    and
+
+        "_id": "6",
+        "_score": 0.5981865,
