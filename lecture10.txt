@@ -1,0 +1,104 @@
+Search DSL Query Context
+- DSL = Domain Specific Language
+
+Step 1) check the structure of the "courses" index:
+GET /courses
+
+{
+  "courses": {
+    "aliases": {},
+    "mappings": {
+      "classroom": {
+        "properties": {
+          "course_description": {
+            "type": "text",
+            "fields": {
+              "keyword": {
+                "type": "keyword",
+                "ignore_above": 256
+              }
+            }
+          },
+          "course_publish_date": {
+            "type": "date"
+          },
+          "name": {
+            "type": "text",
+            "fields": {
+              "keyword": {
+                "type": "keyword",
+                "ignore_above": 256
+              }
+            }
+          },
+          "professor": {
+            "properties": {
+              "department": {
+                "type": "text",
+                "fields": {
+                  "keyword": {
+                    "type": "keyword",
+                    "ignore_above": 256
+                  }
+                }
+              },
+              "email": {
+                "type": "text",
+                "fields": {
+                  "keyword": {
+                    "type": "keyword",
+                    "ignore_above": 256
+                  }
+                }
+              },
+              "facutly_type": {
+                "type": "text",
+                "fields": {
+                  "keyword": {
+                    "type": "keyword",
+                    "ignore_above": 256
+                  }
+                }
+              },
+              "name": {
+                "type": "text",
+                "fields": {
+                  "keyword": {
+                    "type": "keyword",
+                    "ignore_above": 256
+                  }
+                }
+              }
+            }
+          },
+          "room": {
+            "type": "text",
+            "fields": {
+              "keyword": {
+                "type": "keyword",
+                "ignore_above": 256
+              }
+            }
+          },
+          "students_enrolled": {
+            "type": "long"
+          }
+        }
+      }
+    },
+    "settings": {
+      "index": {
+        "creation_date": "1541782697183",
+        "number_of_shards": "5",
+        "number_of_replicas": "1",
+        "uuid": "sUCQDAPzRG2E5pSiOvqy8A",
+        "version": {
+          "created": "6040299"
+        },
+        "provided_name": "courses"
+      }
+    }
+  }
+}
+
+Step 2) 
