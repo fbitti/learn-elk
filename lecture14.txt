@@ -1,0 +1,917 @@
+Aggregations DSL (part 2)
+
+Step 1) Make a Stats aggregation
+GET /vehicles/cars/_search
+{
+  "size": 0, 
+  "aggs": {
+    "popular_cars": {
+      "terms": {
+        "field": "make.keyword"
+      },
+      "aggs": {
+        "stats_on_price": {
+          "stats": {
+            "field": "price"
+          }
+        }
+      }
+    }
+  }
+}
+
+....
+  "aggregations": {
+    "popular_cars": {
+      "doc_count_error_upper_bound": 0,
+      "sum_other_doc_count": 0,
+      "buckets": [
+        {
+          "key": "dodge",
+          "doc_count": 5,
+          "stats_on_price": {
+            "count": 5,
+            "min": 10000,
+            "max": 35000,
+            "avg": 18900,
+            "sum": 94500
+          }
+        },
+        {
+          "key": "chevrolet",
+          "doc_count": 3,
+          "stats_on_price": {
+            "count": 3,
+            "min": 13000,
+            "max": 28000,
+            "avg": 20333.333333333332,
+            "sum": 61000
+          }
+        },
+        {
+          "key": "bmw",
+          "doc_count": 2,
+          "stats_on_price": {
+            "count": 2,
+            "min": 30000,
+            "max": 80000,
+            "avg": 55000,
+            "sum": 110000
+          }
+        },
+        {
+          "key": "ford",
+          "doc_count": 2,
+          "stats_on_price": {
+            "count": 2,
+            "min": 25000,
+            "max": 30000,
+            "avg": 27500,
+            "sum": 55000
+          }
+        },
+        {
+          "key": "honda",
+          "doc_count": 2,
+          "stats_on_price": {
+            "count": 2,
+            "min": 10000,
+            "max": 20000,
+            "avg": 15000,
+            "sum": 30000
+          }
+        },
+        {
+          "key": "toyota",
+          "doc_count": 2,
+          "stats_on_price": {
+            "count": 2,
+            "min": 12000,
+            "max": 15000,
+            "avg": 13500,
+            "sum": 27000
+          }
+        }
+      ]
+    }
+  }
+}
+
+Step 2) How many of each make were sold during each half of 2016?
+Note: the "to" parameter is not inclusive.
+GET /vehicles/cars/_search
+{
+  "size": 0, 
+  "aggs": {
+    "popular_cars": {
+      "terms": {
+        "field": "make.keyword"
+      },
+      "aggs": {
+        "sold_date_ranges": {
+          "range": {
+            "field": "sold",
+            "ranges": [
+              {
+                "from": "2016-01-01",
+                "to": "2016-06-01"
+              }, 
+              {
+                "from": "2016-06-01",
+                "to": "2017-01-01"
+              }
+            ]
+          }
+        }
+      }
+    }
+  }
+}
+
+....
+  "aggregations": {
+    "popular_cars": {
+      "doc_count_error_upper_bound": 0,
+      "sum_other_doc_count": 0,
+      "buckets": [
+        {
+          "key": "dodge",
+          "doc_count": 5,
+          "sold_date_ranges": {
+            "buckets": [
+              {
+                "key": "2016-01-01T00:00:00.000Z-2016-06-01T00:00:00.000Z",
+                "from": 1451606400000,
+                "from_as_string": "2016-01-01T00:00:00.000Z",
+                "to": 1464739200000,
+                "to_as_string": "2016-06-01T00:00:00.000Z",
+                "doc_count": 4
+              },
+              {
+                "key": "2016-06-01T00:00:00.000Z-2017-01-01T00:00:00.000Z",
+                "from": 1464739200000,
+                "from_as_string": "2016-06-01T00:00:00.000Z",
+                "to": 1483228800000,
+                "to_as_string": "2017-01-01T00:00:00.000Z",
+                "doc_count": 1
+              }
+            ]
+          }
+        },
+        {
+          "key": "chevrolet",
+          "doc_count": 3,
+          "sold_date_ranges": {
+            "buckets": [
+              {
+                "key": "2016-01-01T00:00:00.000Z-2016-06-01T00:00:00.000Z",
+                "from": 1451606400000,
+                "from_as_string": "2016-01-01T00:00:00.000Z",
+                "to": 1464739200000,
+                "to_as_string": "2016-06-01T00:00:00.000Z",
+                "doc_count": 0
+              },
+              {
+                "key": "2016-06-01T00:00:00.000Z-2017-01-01T00:00:00.000Z",
+                "from": 1464739200000,
+                "from_as_string": "2016-06-01T00:00:00.000Z",
+                "to": 1483228800000,
+                "to_as_string": "2017-01-01T00:00:00.000Z",
+                "doc_count": 3
+              }
+            ]
+          }
+        },
+        {
+          "key": "bmw",
+          "doc_count": 2,
+          "sold_date_ranges": {
+            "buckets": [
+              {
+                "key": "2016-01-01T00:00:00.000Z-2016-06-01T00:00:00.000Z",
+                "from": 1451606400000,
+                "from_as_string": "2016-01-01T00:00:00.000Z",
+                "to": 1464739200000,
+                "to_as_string": "2016-06-01T00:00:00.000Z",
+                "doc_count": 1
+              },
+              {
+                "key": "2016-06-01T00:00:00.000Z-2017-01-01T00:00:00.000Z",
+                "from": 1464739200000,
+                "from_as_string": "2016-06-01T00:00:00.000Z",
+                "to": 1483228800000,
+                "to_as_string": "2017-01-01T00:00:00.000Z",
+                "doc_count": 1
+              }
+            ]
+          }
+        },
+        {
+          "key": "ford",
+          "doc_count": 2,
+          "sold_date_ranges": {
+            "buckets": [
+              {
+                "key": "2016-01-01T00:00:00.000Z-2016-06-01T00:00:00.000Z",
+                "from": 1451606400000,
+                "from_as_string": "2016-01-01T00:00:00.000Z",
+                "to": 1464739200000,
+                "to_as_string": "2016-06-01T00:00:00.000Z",
+                "doc_count": 1
+              },
+              {
+                "key": "2016-06-01T00:00:00.000Z-2017-01-01T00:00:00.000Z",
+                "from": 1464739200000,
+                "from_as_string": "2016-06-01T00:00:00.000Z",
+                "to": 1483228800000,
+                "to_as_string": "2017-01-01T00:00:00.000Z",
+                "doc_count": 1
+              }
+            ]
+          }
+        },
+        {
+          "key": "honda",
+          "doc_count": 2,
+          "sold_date_ranges": {
+            "buckets": [
+              {
+                "key": "2016-01-01T00:00:00.000Z-2016-06-01T00:00:00.000Z",
+                "from": 1451606400000,
+                "from_as_string": "2016-01-01T00:00:00.000Z",
+                "to": 1464739200000,
+                "to_as_string": "2016-06-01T00:00:00.000Z",
+                "doc_count": 0
+              },
+              {
+                "key": "2016-06-01T00:00:00.000Z-2017-01-01T00:00:00.000Z",
+                "from": 1464739200000,
+                "from_as_string": "2016-06-01T00:00:00.000Z",
+                "to": 1483228800000,
+                "to_as_string": "2017-01-01T00:00:00.000Z",
+                "doc_count": 2
+              }
+            ]
+          }
+        },
+        {
+          "key": "toyota",
+          "doc_count": 2,
+          "sold_date_ranges": {
+            "buckets": [
+              {
+                "key": "2016-01-01T00:00:00.000Z-2016-06-01T00:00:00.000Z",
+                "from": 1451606400000,
+                "from_as_string": "2016-01-01T00:00:00.000Z",
+                "to": 1464739200000,
+                "to_as_string": "2016-06-01T00:00:00.000Z",
+                "doc_count": 0
+              },
+              {
+                "key": "2016-06-01T00:00:00.000Z-2017-01-01T00:00:00.000Z",
+                "from": 1464739200000,
+                "from_as_string": "2016-06-01T00:00:00.000Z",
+                "to": 1483228800000,
+                "to_as_string": "2017-01-01T00:00:00.000Z",
+                "doc_count": 2
+              }
+            ]
+          }
+        }
+      ]
+    }
+  }
+}
+
+Step 3) For each brand and period, what was the average price of the cars sold?
+GET /vehicles/cars/_search
+{
+  "size": 0, 
+  "aggs": {
+    "popular_cars": {
+      "terms": {
+        "field": "make.keyword"
+      },
+      "aggs": {
+        "sold_date_ranges": {
+          "range": {
+            "field": "sold",
+            "ranges": [
+              {
+                "from": "2016-01-01",
+                "to": "2016-06-01"
+              }, 
+              {
+                "from": "2016-06-01",
+                "to": "2017-01-01"
+              }
+            ]
+          },
+          "aggs": {
+            "avg_price": {
+              "avg": {
+                "field": "price"
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+....
+  "aggregations": {
+    "popular_cars": {
+      "doc_count_error_upper_bound": 0,
+      "sum_other_doc_count": 0,
+      "buckets": [
+        {
+          "key": "dodge",
+          "doc_count": 5,
+          "sold_date_ranges": {
+            "buckets": [
+              {
+                "key": "2016-01-01T00:00:00.000Z-2016-06-01T00:00:00.000Z",
+                "from": 1451606400000,
+                "from_as_string": "2016-01-01T00:00:00.000Z",
+                "to": 1464739200000,
+                "to_as_string": "2016-06-01T00:00:00.000Z",
+                "doc_count": 4,
+                "avg_price": {
+                  "value": 19125
+                }
+              },
+              {
+                "key": "2016-06-01T00:00:00.000Z-2017-01-01T00:00:00.000Z",
+                "from": 1464739200000,
+                "from_as_string": "2016-06-01T00:00:00.000Z",
+                "to": 1483228800000,
+                "to_as_string": "2017-01-01T00:00:00.000Z",
+                "doc_count": 1,
+                "avg_price": {
+                  "value": 18000
+                }
+              }
+            ]
+          }
+        },
+        {
+          "key": "chevrolet",
+          "doc_count": 3,
+          "sold_date_ranges": {
+            "buckets": [
+              {
+                "key": "2016-01-01T00:00:00.000Z-2016-06-01T00:00:00.000Z",
+                "from": 1451606400000,
+                "from_as_string": "2016-01-01T00:00:00.000Z",
+                "to": 1464739200000,
+                "to_as_string": "2016-06-01T00:00:00.000Z",
+                "doc_count": 0,
+                "avg_price": {
+                  "value": null
+                }
+              },
+              {
+                "key": "2016-06-01T00:00:00.000Z-2017-01-01T00:00:00.000Z",
+                "from": 1464739200000,
+                "from_as_string": "2016-06-01T00:00:00.000Z",
+                "to": 1483228800000,
+                "to_as_string": "2017-01-01T00:00:00.000Z",
+                "doc_count": 3,
+                "avg_price": {
+                  "value": 20333.333333333332
+                }
+              }
+            ]
+          }
+        },
+        {
+          "key": "bmw",
+          "doc_count": 2,
+          "sold_date_ranges": {
+            "buckets": [
+              {
+                "key": "2016-01-01T00:00:00.000Z-2016-06-01T00:00:00.000Z",
+                "from": 1451606400000,
+                "from_as_string": "2016-01-01T00:00:00.000Z",
+                "to": 1464739200000,
+                "to_as_string": "2016-06-01T00:00:00.000Z",
+                "doc_count": 1,
+                "avg_price": {
+                  "value": 80000
+                }
+              },
+              {
+                "key": "2016-06-01T00:00:00.000Z-2017-01-01T00:00:00.000Z",
+                "from": 1464739200000,
+                "from_as_string": "2016-06-01T00:00:00.000Z",
+                "to": 1483228800000,
+                "to_as_string": "2017-01-01T00:00:00.000Z",
+                "doc_count": 1,
+                "avg_price": {
+                  "value": 30000
+                }
+              }
+            ]
+          }
+        },
+        {
+          "key": "ford",
+          "doc_count": 2,
+          "sold_date_ranges": {
+            "buckets": [
+              {
+                "key": "2016-01-01T00:00:00.000Z-2016-06-01T00:00:00.000Z",
+                "from": 1451606400000,
+                "from_as_string": "2016-01-01T00:00:00.000Z",
+                "to": 1464739200000,
+                "to_as_string": "2016-06-01T00:00:00.000Z",
+                "doc_count": 1,
+                "avg_price": {
+                  "value": 30000
+                }
+              },
+              {
+                "key": "2016-06-01T00:00:00.000Z-2017-01-01T00:00:00.000Z",
+                "from": 1464739200000,
+                "from_as_string": "2016-06-01T00:00:00.000Z",
+                "to": 1483228800000,
+                "to_as_string": "2017-01-01T00:00:00.000Z",
+                "doc_count": 1,
+                "avg_price": {
+                  "value": 25000
+                }
+              }
+            ]
+          }
+        },
+        {
+          "key": "honda",
+          "doc_count": 2,
+          "sold_date_ranges": {
+            "buckets": [
+              {
+                "key": "2016-01-01T00:00:00.000Z-2016-06-01T00:00:00.000Z",
+                "from": 1451606400000,
+                "from_as_string": "2016-01-01T00:00:00.000Z",
+                "to": 1464739200000,
+                "to_as_string": "2016-06-01T00:00:00.000Z",
+                "doc_count": 0,
+                "avg_price": {
+                  "value": null
+                }
+              },
+              {
+                "key": "2016-06-01T00:00:00.000Z-2017-01-01T00:00:00.000Z",
+                "from": 1464739200000,
+                "from_as_string": "2016-06-01T00:00:00.000Z",
+                "to": 1483228800000,
+                "to_as_string": "2017-01-01T00:00:00.000Z",
+                "doc_count": 2,
+                "avg_price": {
+                  "value": 15000
+                }
+              }
+            ]
+          }
+        },
+        {
+          "key": "toyota",
+          "doc_count": 2,
+          "sold_date_ranges": {
+            "buckets": [
+              {
+                "key": "2016-01-01T00:00:00.000Z-2016-06-01T00:00:00.000Z",
+                "from": 1451606400000,
+                "from_as_string": "2016-01-01T00:00:00.000Z",
+                "to": 1464739200000,
+                "to_as_string": "2016-06-01T00:00:00.000Z",
+                "doc_count": 0,
+                "avg_price": {
+                  "value": null
+                }
+              },
+              {
+                "key": "2016-06-01T00:00:00.000Z-2017-01-01T00:00:00.000Z",
+                "from": 1464739200000,
+                "from_as_string": "2016-06-01T00:00:00.000Z",
+                "to": 1483228800000,
+                "to_as_string": "2017-01-01T00:00:00.000Z",
+                "doc_count": 2,
+                "avg_price": {
+                  "value": 13500
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  }
+}
+
+Step 4) How many vehicles are there grouped by different conditions?
+GET /vehicles/cars/_search
+{
+  "size": 0, 
+  "aggs": {
+    "car_conditions": {
+      "terms": {
+        "field": "condition.keyword"
+      }
+    }
+  }
+}
+
+....
+  "aggregations": {
+    "car_conditions": {
+      "doc_count_error_upper_bound": 0,
+      "sum_other_doc_count": 0,
+      "buckets": [
+        {
+          "key": "good",
+          "doc_count": 6
+        },
+        {
+          "key": "new",
+          "doc_count": 6
+        },
+        {
+          "key": "okay",
+          "doc_count": 4
+        }
+      ]
+    }
+  }
+}
+
+Step 5) Report the average price for each group of vehicles conditions.
+GET /vehicles/cars/_search
+{
+  "size": 0, 
+  "aggs": {
+    "car_conditions": {
+      "terms": {
+        "field": "condition.keyword"
+      },
+      "aggs": {
+        "avg_price": {
+          "avg": {
+            "field": "price"
+          }
+        }
+      }
+    }
+  }
+}
+
+....
+      "buckets": [
+        {
+          "key": "good",
+          "doc_count": 6,
+          "avg_price": {
+            "value": 19000
+          }
+        },
+        {
+          "key": "new",
+          "doc_count": 6,
+          "avg_price": {
+            "value": 36333.333333333336
+          }
+        },
+        {
+          "key": "okay",
+          "doc_count": 4,
+          "avg_price": {
+            "value": 11375
+          }
+        }
+      ]
+....
+
+Step 6) How many cars of each brand inside each group of car conditions?
+
+GET /vehicles/cars/_search
+{
+  "size": 0, 
+  "aggs": {
+    "car_conditions": {
+      "terms": {
+        "field": "condition.keyword"
+      },
+      "aggs": {
+        "avg_price": {
+          "avg": {
+            "field": "price"
+          }
+        },
+        "car_make": {
+          "terms": {
+            "field": "make.keyword"
+          }
+        }
+      }
+    }
+  }
+}
+
+....
+      "buckets": [
+        {
+          "key": "good",
+          "doc_count": 6,
+          "avg_price": {
+            "value": 19000
+          },
+          "car_make": {
+            "doc_count_error_upper_bound": 0,
+            "sum_other_doc_count": 0,
+            "buckets": [
+              {
+                "key": "dodge",
+                "doc_count": 2
+              },
+              {
+                "key": "toyota",
+                "doc_count": 2
+              },
+              {
+                "key": "bmw",
+                "doc_count": 1
+              },
+              {
+                "key": "chevrolet",
+                "doc_count": 1
+              }
+            ]
+          }
+        },
+        {
+          "key": "new",
+          "doc_count": 6,
+          "avg_price": {
+            "value": 36333.333333333336
+          },
+          "car_make": {
+            "doc_count_error_upper_bound": 0,
+            "sum_other_doc_count": 0,
+            "buckets": [
+              {
+                "key": "ford",
+                "doc_count": 2
+              },
+              {
+                "key": "bmw",
+                "doc_count": 1
+              },
+              {
+                "key": "chevrolet",
+                "doc_count": 1
+              },
+              {
+                "key": "dodge",
+                "doc_count": 1
+              },
+              {
+                "key": "honda",
+                "doc_count": 1
+              }
+            ]
+          }
+        },
+        {
+          "key": "okay",
+          "doc_count": 4,
+          "avg_price": {
+            "value": 11375
+          },
+          "car_make": {
+            "doc_count_error_upper_bound": 0,
+            "sum_other_doc_count": 0,
+            "buckets": [
+              {
+                "key": "dodge",
+                "doc_count": 2
+              },
+              {
+                "key": "chevrolet",
+                "doc_count": 1
+              },
+              {
+                "key": "honda",
+                "doc_count": 1
+              }
+            ]
+          }
+        }
+      ]
+    }
+  }
+}
+
+Step 7) Add, for each make, the min and max prices of the cars.
+GET /vehicles/cars/_search
+{
+  "size": 0, 
+  "aggs": {
+    "car_conditions": {
+      "terms": {
+        "field": "condition.keyword"
+      },
+      "aggs": {
+        "avg_price": {
+          "avg": {
+            "field": "price"
+          }
+        },
+        "car_make": {
+          "terms": {
+            "field": "make.keyword"
+          },
+          "aggs": {
+            "min_price": {
+              "min": {
+                "field": "price"
+              }
+            },
+            "max_price": {
+              "max": {
+                "field": "price"
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+....
+      "buckets": [
+        {
+          "key": "good",
+          "doc_count": 6,
+          "avg_price": {
+            "value": 19000
+          },
+          "car_make": {
+            "doc_count_error_upper_bound": 0,
+            "sum_other_doc_count": 0,
+            "buckets": [
+              {
+                "key": "dodge",
+                "doc_count": 2,
+                "max_price": {
+                  "value": 19000
+                },
+                "min_price": {
+                  "value": 18000
+                }
+              },
+              {
+                "key": "toyota",
+                "doc_count": 2,
+                "max_price": {
+                  "value": 15000
+                },
+                "min_price": {
+                  "value": 12000
+                }
+              },
+              {
+                "key": "bmw",
+                "doc_count": 1,
+                "max_price": {
+                  "value": 30000
+                },
+                "min_price": {
+                  "value": 30000
+                }
+              },
+              {
+                "key": "chevrolet",
+                "doc_count": 1,
+                "max_price": {
+                  "value": 20000
+                },
+                "min_price": {
+                  "value": 20000
+                }
+              }
+            ]
+          }
+        },
+        {
+          "key": "new",
+          "doc_count": 6,
+          "avg_price": {
+            "value": 36333.333333333336
+          },
+          "car_make": {
+            "doc_count_error_upper_bound": 0,
+            "sum_other_doc_count": 0,
+            "buckets": [
+              {
+                "key": "ford",
+                "doc_count": 2,
+                "max_price": {
+                  "value": 30000
+                },
+                "min_price": {
+                  "value": 25000
+                }
+              },
+              {
+                "key": "bmw",
+                "doc_count": 1,
+                "max_price": {
+                  "value": 80000
+                },
+                "min_price": {
+                  "value": 80000
+                }
+              },
+              {
+                "key": "chevrolet",
+                "doc_count": 1,
+                "max_price": {
+                  "value": 28000
+                },
+                "min_price": {
+                  "value": 28000
+                }
+              },
+              {
+                "key": "dodge",
+                "doc_count": 1,
+                "max_price": {
+                  "value": 35000
+                },
+                "min_price": {
+                  "value": 35000
+                }
+              },
+              {
+                "key": "honda",
+                "doc_count": 1,
+                "max_price": {
+                  "value": 20000
+                },
+                "min_price": {
+                  "value": 20000
+                }
+              }
+            ]
+          }
+        },
+        {
+          "key": "okay",
+          "doc_count": 4,
+          "avg_price": {
+            "value": 11375
+          },
+          "car_make": {
+            "doc_count_error_upper_bound": 0,
+            "sum_other_doc_count": 0,
+            "buckets": [
+              {
+                "key": "dodge",
+                "doc_count": 2,
+                "max_price": {
+                  "value": 12500
+                },
+                "min_price": {
+                  "value": 10000
+                }
+              },
+              {
+                "key": "chevrolet",
+                "doc_count": 1,
+                "max_price": {
+                  "value": 13000
+                },
+                "min_price": {
+                  "value": 13000
+                }
+              },
+              {
+                "key": "honda",
+                "doc_count": 1,
+                "max_price": {
+                  "value": 10000
+                },
+                "min_price": {
+                  "value": 10000
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  }
+}
