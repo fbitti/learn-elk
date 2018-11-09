@@ -1,4 +1,5 @@
 Aggregations (part 1)
+- it's about gaining insights about your data, through summarization 
 
 Step 1) get all the documents in this index.
 By default, Elasticsearch only returns the top 10 documents.
@@ -391,3 +392,336 @@ GET /vehicles/cars/_search
     ]
   }
 }
+
+Step 3) for pagination, use the parameter "from" combined with "size".
+In this example, only the first 5 documents will be shown.
+
+GET /vehicles/cars/_search
+{
+  "from": 0,
+  "size": 5,
+  "query": {
+    "match_all": {}
+  }
+}
+
+{
+  "took": 1,
+  "timed_out": false,
+  "_shards": {
+    "total": 5,
+    "successful": 5,
+    "skipped": 0,
+    "failed": 0
+  },
+  "hits": {
+    "total": 16,
+    "max_score": 1,
+    "hits": [
+      {
+        "_index": "vehicles",
+        "_type": "cars",
+        "_id": "9VEu-mYBC46YeeqoC_TT",
+        "_score": 1,
+        "_source": {
+          "price": 10000,
+          "color": "white",
+          "make": "honda",
+          "sold": "2016-10-28",
+          "condition": "okay"
+        }
+      },
+      {
+        "_index": "vehicles",
+        "_type": "cars",
+        "_id": "-lEu-mYBC46YeeqoC_TT",
+        "_score": 1,
+        "_source": {
+          "price": 18000,
+          "color": "red",
+          "make": "dodge",
+          "sold": "2016-11-05",
+          "condition": "good"
+        }
+      },
+      {
+        "_index": "vehicles",
+        "_type": "cars",
+        "_id": "_1Eu-mYBC46YeeqoC_TT",
+        "_score": 1,
+        "_source": {
+          "price": 20000,
+          "color": "red",
+          "make": "chevrolet",
+          "sold": "2016-08-15",
+          "condition": "good"
+        }
+      },
+      {
+        "_index": "vehicles",
+        "_type": "cars",
+        "_id": "AFEu-mYBC46YeeqoC_XT",
+        "_score": 1,
+        "_source": {
+          "price": 13000,
+          "color": "gray",
+          "make": "chevrolet",
+          "sold": "2016-11-20",
+          "condition": "okay"
+        }
+      },
+      {
+        "_index": "vehicles",
+        "_type": "cars",
+        "_id": "-VEu-mYBC46YeeqoC_TT",
+        "_score": 1,
+        "_source": {
+          "price": 12000,
+          "color": "green",
+          "make": "toyota",
+          "sold": "2016-08-19",
+          "condition": "good"
+        }
+      }
+    ]
+  }
+}
+
+Step 4) Elasticsearch also provides a "sort" option.
+In this example, the first 3 results, sorted by descending price, are shown.
+The query takes place first and then the sorting happens.
+
+GET /vehicles/cars/_search
+{
+  "from": 0,
+  "size": 3,
+  "query": {
+    "match_all": {}
+  },
+  "sort": [
+    {
+      "price": {
+        "order": "desc"
+      }
+    }
+  ]
+}
+
+{
+  "took": 2,
+  "timed_out": false,
+  "_shards": {
+    "total": 5,
+    "successful": 5,
+    "skipped": 0,
+    "failed": 0
+  },
+  "hits": {
+    "total": 16,
+    "max_score": null,
+    "hits": [
+      {
+        "_index": "vehicles",
+        "_type": "cars",
+        "_id": "-1Eu-mYBC46YeeqoC_TT",
+        "_score": null,
+        "_source": {
+          "price": 80000,
+          "color": "red",
+          "make": "bmw",
+          "sold": "2016-01-01",
+          "condition": "new"
+        },
+        "sort": [
+          80000
+        ]
+      },
+      {
+        "_index": "vehicles",
+        "_type": "cars",
+        "_id": "AlEu-mYBC46YeeqoC_XT",
+        "_score": null,
+        "_source": {
+          "price": 35000,
+          "color": "red",
+          "make": "dodge",
+          "sold": "2016-04-10",
+          "condition": "new"
+        },
+        "sort": [
+          35000
+        ]
+      },
+      {
+        "_index": "vehicles",
+        "_type": "cars",
+        "_id": "BFEu-mYBC46YeeqoC_XT",
+        "_score": null,
+        "_source": {
+          "price": 30000,
+          "color": "gray",
+          "make": "bmw",
+          "sold": "2016-11-20",
+          "condition": "good"
+        },
+        "sort": [
+          30000
+        ]
+      }
+    ]
+  }
+}
+
+Step 5) Count all cars made by Dodge.
+GET /vehicles/cars/_count
+{
+  "query": {
+    "match": {
+      "make": "dodge"
+    }
+  }
+}
+
+{
+  "count": 5,
+  "_shards": {
+    "total": 5,
+    "successful": 5,
+    "skipped": 0,
+    "failed": 0
+  }
+}
+
+GET /vehicles/cars/_count
+{
+  "query": {
+    "match": {
+      "make": "toyota"
+    }
+  }
+}
+
+....
+  "count": 2,
+....
+
+Step 6) Aggregate on the car brand (make).
+GET /vehicles/cars/_search
+{
+  "aggs": {
+    "popular_cars": {
+      "terms": {
+        "field": "make.keyword"
+      }
+    }
+  }
+}
+
+....
+  "aggregations": {
+    "popular_cars": {
+      "doc_count_error_upper_bound": 0,
+      "sum_other_doc_count": 0,
+      "buckets": [
+        {
+          "key": "dodge",
+          "doc_count": 5
+        },
+        {
+          "key": "chevrolet",
+          "doc_count": 3
+        },
+        {
+          "key": "bmw",
+          "doc_count": 2
+        },
+        {
+          "key": "ford",
+          "doc_count": 2
+        },
+        {
+          "key": "honda",
+          "doc_count": 2
+        },
+        {
+          "key": "toyota",
+          "doc_count": 2
+        }
+      ]
+    }
+  }
+}
+
+Step 7) Besides the count per brand, let me know each brand's average price.
+GET /vehicles/cars/_search
+{
+  "aggs": {
+    "popular_cars": {
+      "terms": {
+        "field": "make.keyword"
+      },
+      "aggs": {
+        "avg_price": {
+          "avg": {
+            "field": "price"
+          }
+        }
+      }
+    }
+  }
+}
+
+....
+  "aggregations": {
+    "popular_cars": {
+      "doc_count_error_upper_bound": 0,
+      "sum_other_doc_count": 0,
+      "buckets": [
+        {
+          "key": "dodge",
+          "doc_count": 5,
+          "avg_price": {
+            "value": 18900
+          }
+        },
+        {
+          "key": "chevrolet",
+          "doc_count": 3,
+          "avg_price": {
+            "value": 20333.333333333332
+          }
+        },
+        {
+          "key": "bmw",
+          "doc_count": 2,
+          "avg_price": {
+            "value": 55000
+          }
+        },
+        {
+          "key": "ford",
+          "doc_count": 2,
+          "avg_price": {
+            "value": 27500
+          }
+        },
+        {
+          "key": "honda",
+          "doc_count": 2,
+          "avg_price": {
+            "value": 15000
+          }
+        },
+        {
+          "key": "toyota",
+          "doc_count": 2,
+          "avg_price": {
+            "value": 13500
+          }
+        }
+      ]
+    }
+  }
+}
+
+Step 8) 
