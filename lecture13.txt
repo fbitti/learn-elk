@@ -921,4 +921,3 @@ GET /vehicles/cars/_search
   }
 }
 
-Step 11) 
