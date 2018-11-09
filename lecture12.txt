@@ -1,3 +1,221 @@
 Search DSL Filter Context
 - DSL stands for Domain Specific Language
 
+Step 1) This filtered search does not do relevance score. All scores are 0.
+Also, filters are cached, so subsequent request will be faster.
+
+GET /courses/_search
+{
+  "query": {
+    "bool": {
+      "filter": {
+        "match": {"name": "accounting"}
+      }
+    }
+  }
+}
+
+{
+  "took": 9,
+  "timed_out": false,
+  "_shards": {
+    "total": 5,
+    "successful": 5,
+    "skipped": 0,
+    "failed": 0
+  },
+  "hits": {
+    "total": 4,
+    "max_score": 0,
+    "hits": [
+      {
+        "_index": "courses",
+        "_type": "classroom",
+        "_id": "8",
+        "_score": 0,
+        "_source": {
+          "name": "Accounting Info Systems 350",
+          "room": "E3",
+          "professor": {
+            "name": "Bill Cage",
+            "department": "accounting",
+            "facutly_type": "full-time",
+            "email": "cageb@onuni.com"
+          },
+          "students_enrolled": 19,
+          "course_publish_date": "2014-05-15",
+          "course_description": "Act Sys 350 is an advanced course providing students a practical understanding of an accounting system in database technology. Students will use MS Access to build a transaction ledger system"
+        }
+      },
+      {
+        "_index": "courses",
+        "_type": "classroom",
+        "_id": "9",
+        "_score": 0,
+        "_source": {
+          "name": "Tax Accounting 200",
+          "room": "E7",
+          "professor": {
+            "name": "Thomas Baszo",
+            "department": "finance",
+            "facutly_type": "part-time",
+            "email": "baszot@onuni.com"
+          },
+          "students_enrolled": 17,
+          "course_publish_date": "2016-06-15",
+          "course_description": "Tax Act 200 is an intermediate course covering various aspects of tax law"
+        }
+      },
+      {
+        "_index": "courses",
+        "_type": "classroom",
+        "_id": "6",
+        "_score": 0,
+        "_source": {
+          "name": "Cost Accounting 400",
+          "room": "E7",
+          "professor": {
+            "name": "Bill Cage",
+            "department": "accounting",
+            "facutly_type": "full-time",
+            "email": "cageb@onuni.com"
+          },
+          "students_enrolled": 31,
+          "course_publish_date": "2014-12-31",
+          "course_description": "Cst Act 400 is an advanced course from the business school taken by final year accounting majors that covers the subject of business incurred costs and how to record them in financial statements"
+        }
+      },
+      {
+        "_index": "courses",
+        "_type": "classroom",
+        "_id": "1",
+        "_score": 0,
+        "_source": {
+          "name": "Accounting 101",
+          "room": "E3",
+          "professor": {
+            "name": "Thomas Baszo",
+            "department": "finance",
+            "facutly_type": "part-time",
+            "email": "baszot@onuni.com"
+          },
+          "students_enrolled": 27,
+          "course_publish_date": "2015-01-19",
+          "course_description": "Act 101 is a course from the business school on the introduction to accounting that teaches students how to read and compose basic financial statements"
+        }
+      }
+    ]
+  }
+}
+
+Step 2) Play with "must"
+GET /courses/_search
+{
+  "query": {
+    "bool": {
+      "filter": {
+        "bool": {
+          "must": [
+            {"match": {"name": "accounting"}},
+            {"match": {"professor.name": "bill"}}
+          ]
+        }
+      }
+    }
+  }
+}
+
+....
+  "hits": {
+    "total": 2,
+    "max_score": 0,
+    "hits": [
+      {
+        "_index": "courses",
+        "_type": "classroom",
+        "_id": "8",
+        "_score": 0,
+        "_source": {
+          "name": "Accounting Info Systems 350",
+          "room": "E3",
+          "professor": {
+            "name": "Bill Cage",
+            "department": "accounting",
+            "facutly_type": "full-time",
+            "email": "cageb@onuni.com"
+          },
+          "students_enrolled": 19,
+          "course_publish_date": "2014-05-15",
+          "course_description": "Act Sys 350 is an advanced course providing students a practical understanding of an accounting system in database technology. Students will use MS Access to build a transaction ledger system"
+        }
+      },
+      {
+        "_index": "courses",
+        "_type": "classroom",
+        "_id": "6",
+        "_score": 0,
+        "_source": {
+          "name": "Cost Accounting 400",
+          "room": "E7",
+          "professor": {
+            "name": "Bill Cage",
+            "department": "accounting",
+            "facutly_type": "full-time",
+            "email": "cageb@onuni.com"
+          },
+          "students_enrolled": 31,
+          "course_publish_date": "2014-12-31",
+          "course_description": "Cst Act 400 is an advanced course from the business school taken by final year accounting majors that covers the subject of business incurred costs and how to record them in financial statements"
+        }
+      }
+    ]
+  }
+}
+
+Step 3) Play with "must_not"
+GET /courses/_search
+{
+  "query": {
+    "bool": {
+      "filter": {
+        "bool": {
+          "must": [
+            {"match": {"name": "accounting"}},
+            {"match": {"professor.name": "bill"}}
+          ],
+          "must_not": [
+            {"match": {"room": "e7"}}
+          ]
+        }
+      }
+    }
+  }
+}
+
+....
+  "hits": {
+    "total": 1,
+    "max_score": 0,
+    "hits": [
+      {
+        "_index": "courses",
+        "_type": "classroom",
+        "_id": "8",
+        "_score": 0,
+        "_source": {
+          "name": "Accounting Info Systems 350",
+          "room": "E3",
+          "professor": {
+            "name": "Bill Cage",
+            "department": "accounting",
+            "facutly_type": "full-time",
+            "email": "cageb@onuni.com"
+          },
+          "students_enrolled": 19,
+          "course_publish_date": "2014-05-15",
+          "course_description": "Act Sys 350 is an advanced course providing students a practical understanding of an accounting system in database technology. Students will use MS Access to build a transaction ledger system"
+        }
+      }
+    ]
+  }
+}
