@@ -27,5 +27,72 @@ PUT /customers/online/124
 }
 
 Elasticsearch does not get in our way, it figures out what the appropriate data type should be and indexes it properly.
+GET /customers
+
+{
+  "customers": {
+    "aliases": {},
+    "mappings": {
+      "online": {
+        "properties": {
+          "address": {
+            "type": "text",
+            "fields": {
+              "keyword": {
+                "type": "keyword",
+                "ignore_above": 256
+              }
+            }
+          },
+....... etc
+
+Step 2) To enforce Elasticsearch to be strict in only accepting documents matching the current structure:
+Set the "dynamic" setting to either:
+- "false": the additional fields will be ignored
+- "strict": the additional fields will trigger an error
+
+PUT /customers/_mappings/online
+{
+  "dynamic": "false"
+}
+
+{
+  "acknowledged": true
+}
+
+PUT /customers/_mappings/online
+{
+  "dynamic": "strict"
+}
+
+{
+  "acknowledged": true
+}
+
+Step 3) this is an example of the error thrown when "dynamic" is set to "strict" and a new field, "retired", is added:
+PUT /customers/online/124
+{
+  "name": "Mary Cranford",
+  "address": "310 Clark Ave",
+  "gender": "female",
+  "age": 34,
+  "total_spent": 550.75,
+  "is_new": false,
+  "retired": true
+}
+
+{
+  "error": {
+    "root_cause": [
+      {
+        "type": "strict_dynamic_mapping_exception",
+        "reason": "mapping set to strict, dynamic introduction of [retired] within [online] is not allowed"
+      }
+    ],
+    "type": "strict_dynamic_mapping_exception",
+    "reason": "mapping set to strict, dynamic introduction of [retired] within [online] is not allowed"
+  },
+  "status": 400
+}
 
 
