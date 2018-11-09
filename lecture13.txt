@@ -889,4 +889,36 @@ GET /vehicles/cars/_search
   }
 }
 
-Step 10) 
+Step 10) Turn off the individual hits: just show the aggregations, not the documents matching the query.
+Add "size": 0 to the query.
+
+GET /vehicles/cars/_search
+{
+  "size": 0, 
+  "query": {
+    "match": {
+      "color": "red"
+    }
+  }, 
+  "aggs": {
+    "popular_cars": {
+      "terms": {
+        "field": "make.keyword"
+      },
+      "aggs": {
+        "avg_price": {
+          "avg": {
+            "field": "price"
+          }
+        },
+        "max_price": {
+          "max": {
+            "field": "price"
+          }
+        }
+      }
+    }
+  }
+}
+
+Step 11) 
