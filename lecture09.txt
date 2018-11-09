@@ -95,4 +95,169 @@ PUT /customers/online/124
   "status": 400
 }
 
+Step 4) Test the analyzer to see how they work.
+Reference: https://www.elastic.co/guide/en/elasticsearch/reference/current/_testing_analyzers.html
+
+POST _analyze
+{
+  "analyzer": "whitespace",
+  "text":     "The quick brown fox."
+}
+
+{
+  "tokens": [
+    {
+      "token": "The",
+      "start_offset": 0,
+      "end_offset": 3,
+      "type": "word",
+      "position": 0
+    },
+    {
+      "token": "quick",
+      "start_offset": 4,
+      "end_offset": 9,
+      "type": "word",
+      "position": 1
+    },
+    {
+      "token": "brown",
+      "start_offset": 10,
+      "end_offset": 15,
+      "type": "word",
+      "position": 2
+    },
+    {
+      "token": "fox.",
+      "start_offset": 16,
+      "end_offset": 20,
+      "type": "word",
+      "position": 3
+    }
+  ]
+}
+
+Step 5) The standard Analyzer removes punctuation and lowercases all words.
+POST _analyze
+{
+  "analyzer": "standard",
+  "text":     "The quick brown fox."
+}
+
+{
+  "tokens": [
+    {
+      "token": "the",
+      "start_offset": 0,
+      "end_offset": 3,
+      "type": "<ALPHANUM>",
+      "position": 0
+    },
+    {
+      "token": "quick",
+      "start_offset": 4,
+      "end_offset": 9,
+      "type": "<ALPHANUM>",
+      "position": 1
+    },
+    {
+      "token": "brown",
+      "start_offset": 10,
+      "end_offset": 15,
+      "type": "<ALPHANUM>",
+      "position": 2
+    },
+    {
+      "token": "fox",
+      "start_offset": 16,
+      "end_offset": 19,
+      "type": "<ALPHANUM>",
+      "position": 3
+    }
+  ]
+}
+
+Step 6) The simple analyzer works like the standard analyzer but also breaks on numbers (anything that is not a letter):
+POST _analyze
+{
+  "analyzer": "simple",
+  "text":     "The quick123 brown456 fox."
+}
+
+{
+  "tokens": [
+    {
+      "token": "the",
+      "start_offset": 0,
+      "end_offset": 3,
+      "type": "word",
+      "position": 0
+    },
+    {
+      "token": "quick",
+      "start_offset": 4,
+      "end_offset": 9,
+      "type": "word",
+      "position": 1
+    },
+    {
+      "token": "brown",
+      "start_offset": 13,
+      "end_offset": 18,
+      "type": "word",
+      "position": 2
+    },
+    {
+      "token": "fox",
+      "start_offset": 22,
+      "end_offset": 25,
+      "type": "word",
+      "position": 3
+    }
+  ]
+}
+
+Step 7) the "english" analyzer will try to identify words in English and their roots.
+POST _analyze
+{
+  "analyzer": "english",
+  "text":     "The quick:; running brown456 foxes."
+}
+
+{
+  "tokens": [
+    {
+      "token": "quick",
+      "start_offset": 4,
+      "end_offset": 9,
+      "type": "<ALPHANUM>",
+      "position": 1
+    },
+    {
+      "token": "run",
+      "start_offset": 12,
+      "end_offset": 19,
+      "type": "<ALPHANUM>",
+      "position": 2
+    },
+    {
+      "token": "brown456",
+      "start_offset": 20,
+      "end_offset": 28,
+      "type": "<ALPHANUM>",
+      "position": 3
+    },
+    {
+      "token": "fox",
+      "start_offset": 29,
+      "end_offset": 34,
+      "type": "<ALPHANUM>",
+      "position": 4
+    }
+  ]
+}
+
+
+Step 8) you can define your own analyzer
+Reference: https://www.elastic.co/guide/en/elasticsearch/reference/current/analysis-custom-analyzer.html
 
