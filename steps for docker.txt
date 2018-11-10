@@ -166,4 +166,4 @@ output
 
 
 - run the container
-$ docker run -d --name logstash --link "elasticsearch:elasticsearch" -p 514:514 -v ~/proyectos/elk-docker/logstash/pipeline/logstash.conf:/usr/share/logstash/pipeline/logstash.conf -v ~/proyectos/elk-docker/logstash/data/logs/logs:/usr/share/logstash/data/logs/logs  docker.elastic.co/logstash/logstash:6.4.3
+$ docker run -d --name logstash --link "elasticsearch:elasticsearch" -p 514:514 -v ~/proyectos/elk-docker/logstash/pipeline/:/usr/share/logstash/pipeline/ -v ~/proyectos/elk-docker/logstash/data/logs/:/usr/share/logstash/data/logs/  docker.elastic.co/logstash/logstash:6.4.3
