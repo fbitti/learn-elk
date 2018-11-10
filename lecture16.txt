@@ -1,2 +1,8 @@
 Overview of Logstash & Indexing Apache Logs
 
+Step 1) download logs.gz from https://github.com/elastic/elk-index-size-tests
+
+Step 2) 
+
+
+
