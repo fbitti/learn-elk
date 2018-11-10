@@ -112,3 +112,58 @@ $ $ docker network inspect bridge
         "Labels": {}
     }
 ]  
+
+
+In order to configure logstash and integrate it with Elasticsearch and Kibana, follow these steps:
+- Inside /data/logs/logs, download and uncompress https://github.com/elastic/elk-index-size-tests/blob/master/logs.gz
+- Have this file inside /pipeline/logstash.conf:
+input
+{
+	file {
+		path => "/usr/share/logstash/data/logs/logs"
+		type => "logs"
+		start_position => "beginning"
+	}
+
+}
+
+filter
+{
+	grok{
+		match => {
+			"message" => "%{COMBINEDAPACHELOG}"
+		}
+	}
+	mutate{
+		convert => { "bytes" => "integer" }
+	}
+	date {
+		match => [ "timestamp", "dd/MMM/YYYY:HH:mm:ss Z" ]
+		locale => en
+		remove_field => "timestamp"
+	}
+	geoip {
+		source => "clientip"
+	}
+	useragent {
+		source => "agent"
+		target => "useragent"
+	}
+}
+
+
+output
+{
+	stdout {
+		codec => dots
+	}
+
+ 	elasticsearch {
+		hosts => ["http://elasticsearch:9200"]
+  	}
+
+}
+
+
+- run the container
+$ docker run -d --name logstash --link "elasticsearch:elasticsearch" -p 514:514 -v ~/proyectos/elk-docker/logstash/pipeline/logstash.conf:/usr/share/logstash/pipeline/logstash.conf -v ~/proyectos/elk-docker/logstash/data/logs/logs:/usr/share/logstash/data/logs/logs  docker.elastic.co/logstash/logstash:6.4.3
