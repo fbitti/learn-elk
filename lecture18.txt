@@ -1,2 +1,23 @@
 More on Visualizations and Dashboards
 
+Step 1) Play with sub-buckets. Go to Visualize
+- Click on the Visualize link
+- click "+" to add a new visualization
+- click on "pie chart"
+- select "logstash-*" as the index
+- click Buckets -> Split Slices
+- on Aggregation, choose Terms
+- choose geoip.continent_code.keyword
+- leave the "Order By" field as Count
+- leave the "Order" field as Descending
+- leave the "Size" at 5, to just show the top 5 continents
+
+Now, let's play with the sub-buckets.
+- click on "add sub-buckets"
+- click on "Split Slices"
+- choose "Terms"
+- choose geoip.country_name.keyword
+- change "Size" to 3, to select the top 3 countries inside each continent
+- click Play
+
+The continents will be shown on the inner pie, and the countries on the outer pie.
