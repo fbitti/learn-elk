@@ -1,2 +1,57 @@
 Kibana Visualizations and Dashboard Overviews
 
+Step 1) Check the number of indexed documents
+$ docker exec logstash curl -s elasticsearch:9200/logstash-*/_count | jq
+{
+  "count": 637587,
+  "_shards": {
+    "total": 160,
+    "successful": 160,
+    "skipped": 0,
+    "failed": 0
+  }
+}
+
+Step 2) Once all the documents are indexed, you may stop running Logstash
+
+Step 3) In Kibana, go to:
+- Management
+- Elasticsearch
+- Index Management
+- click on any index to see its structure, mappings and settings
+
+Step 4) On Kibana, go to Visualize.
+- Type logstash-* and click Next Step
+- Pick @timestamp and click Create Index Pattern
+
+Step 5) Go to Discover
+- Choose the correct time data: change the time range to between May 1st, 2014 and June 30th, 2014
+- It should show the 300,000 documents from the Apache logs
+
+Step 6) Go to Visualize again
+- Click on "+ Create a visualization"
+- Click on "data table"
+- Select "logstash-*" as the index
+- On Buckets, click on "Split Rows"
+- Click on "Terms"
+- Select geoip.city_name.keyword
+- Hit Play
+- Click Save, give it a name and save
+
+Step 7) Go to Visualize again
+- Click on "+"
+- Click on "Pie Chart"
+- Select "logstash-*" as the index
+- On Buckets, click on "Split Slices"
+- Click on "Terms"
+- Select geoip.city_name.keyword
+- Hit Play
+- Click Save, give it a name and save
+
+Step 8) Click on Dashboard
+- Click on "+ Create new dashboard"
+- Click on Add
+- On Add Panels -> Visualization, click on the pie chart of cities
+- Save the Dashboard
+
+
