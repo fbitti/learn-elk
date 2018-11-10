@@ -21,3 +21,13 @@ Now, let's play with the sub-buckets.
 - click Play
 
 The continents will be shown on the inner pie, and the countries on the outer pie.
+
+Save it with the name "Continent and country breakdown"
+
+Step 2) Add this new visualization to the Dashboard
+- Go to Dashboard
+- Click on "Edit"
+- Click on "Add"
+- Click on the "Continent and country breakdown"
+- Drag the visualizations to change their position.
+
