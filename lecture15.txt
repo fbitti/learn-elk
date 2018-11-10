@@ -1,0 +1,27 @@
+Download and Configure Logstash
+
+These are the stages in the Logstash pipeline:
+Data Sources ---> Inputs ---> Filters ---> Outputs ---> Data Destinations
+
+Step 1) Run logstash passing the config in the command line
+$ bin/logstash -e 'input { stdin {} } output { stdout {} }'
+
+Step 2) Logstash only works with Java 8. If you need to backtrack to that version:
+$ cd /Library/Java/JavaVirtualMachines/
+$ ls
+jdk-10.0.1.jdk/         jdk1.8.0_181.jdk/
+$ cd ~
+$ vi .bash_profile
+Before 'export PATH' type 'export JAVA_HOME=/Library/Java/JavaVirtualMachines/jdk1.8.0_181.jdk/Contents/Home'
+$ java -version
+It should confirm you're now running Java 8
+
+Step 3) Run logstash and type anything on the terminal. It will reply with messages like:
+{
+  @version => "1",
+  @timestamp => 2018-11-10T08:10:25.392Z,
+  host => "host.local",
+  message => "Hello there"
+}
+
+
