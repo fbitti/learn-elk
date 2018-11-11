@@ -1,0 +1,15 @@
+Setting up Filebeat
+
+Step 1) Click on the Kibana logo tab
+
+Step 2) Choose Logging
+
+Step 3) Click on Apache Logs
+
+Filebeat components:
+- Prospectors
+- Havesters: 1 per file
+- Spoolers: combines all lines before sending them over to the destination
+
+
+
