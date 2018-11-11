@@ -61,6 +61,25 @@ Step 5) Display the top cities inside each country in your bar chart visualizati
 - Save the chart with the name "Country and Cities"
 - Add the chart to the Dashboard
 
-Step 6) 
+Step 6) Something cooler: add a heat map of requests on Earth
+- Go to Visualize, add a Coordinate Map
+- In Buckets, click on Geo Coordinates
+- In Aggregation, choose Geohash (it may be the only option available)
+- In Field, choose geoip.location
+- Hit play
+- Change the precision to see how a greater precision shows more cities
+- Save with the name "Geolocation"
+- Add to the Dashboard
+
+Step 7) Let's create an Area visualization
+- Go to the Visualize tab, click Visualize link and add an "Area"
+- In Buckets, select the X-Axis type
+- In Aggregation, select the Date Histogram
+- Kibana should automatically pick @timestamp as the field
+- to start, choose the Monthly interval
+- change the interval to Weekly and Daily, find the peaks of traffic
+- change the axis names
+- save and add the chart to your dashboard
+
 
 
