@@ -1,2 +1,8 @@
 Architecting the Elastic Stack
 
+Logstash is a heavy-weight app that needs a lot of horse power. It is meant to be run in a central location.
+Filebeat is a lightweight app meant to run at each of the apps generating logs but not interfering with them.
+
+Logstash and Filebeat support a back-pressure sensitive protocol. 
+It allows Logstash to tell the multiple Filebeat instances to slow down while its busy crunching data.
+
