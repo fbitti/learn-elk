@@ -29,5 +29,38 @@ Step 2) Add this new visualization to the Dashboard
 - Click on "Edit"
 - Click on "Add"
 - Click on the "Continent and country breakdown"
-- Drag the visualizations to change their position.
+- Drag the visualizations if you'd like to change its position.
+- Click on Save
+- Add the title "Web Requests Dashboard"
+
+Step 3) Create a bar chart visualization
+- Go to Visualize
+- Click the "+" button
+- Click on "Vertical Bar"
+- Select "logstash-*" as the index
+- in Buckets, click on "X-Axis"
+- for the Aggregation, choose "Term"
+- for the Field, choose geoip.country_name.keyword
+- leave Order By as "metric: Count" meaning the number of web requests
+- change the size to 10
+- Click on the play button
+
+Step 4) Rename the graph labels to something more useful
+- Click on Y-axis
+- change the Custom Label to "Number of Requests"
+- In the X-axis section, look for the Custom Label field
+- change the Custom Label to "Countries"
+- click on the play button to see the results
+
+Step 5) Display the top cities inside each country in your bar chart visualization
+- In the X-Axis section, click on "Add sub-buckets"
+- Choose Split Series
+- In the Sub Aggregation field, select Terms again
+- Choose the field geoip.city_name.keyword
+- Hit Play, now each country bar is divided into its top cities
+- Save the chart with the name "Country and Cities"
+- Add the chart to the Dashboard
+
+Step 6) 
+
 
