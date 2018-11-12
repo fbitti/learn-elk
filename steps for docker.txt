@@ -1,20 +1,22 @@
 1) Install docker
   Follow these steps https://docs.docker.com/install/linux/docker-ce/debian/
 
-2) Install ElasticSearch
+2) Install and run ElasticSearch
   https://www.elastic.co/guide/en/elasticsearch/reference/current/docker.html
 
-  $ docker pull docker.elastic.co/elasticsearch/elasticsearch:6.4.2
-  $ docker run -d  --name elasticsearch -p 9200:9200 -p 9300:9300 -e "discovery.type=single-node" docker.elastic.co/elasticsearch/elasticsearch:6.4.2
-  (add -d to run the image in detached mode)
+  $ docker pull docker.elastic.co/elasticsearch/elasticsearch:6.4.3
+  
+  There is no need to open the TCP ports as the other containers will use the docker bridge interface to contact Elasticsearch.
+  $ docker run -d  --name elasticsearch -e "discovery.type=single-node" docker.elastic.co/elasticsearch/elasticsearch:6.4.3
+  (add -d to run the image in detached mode.)
 
-  $ curl localhost:9200
+  $ docker run curl localhost:9200
   {
     "name" : "-RAvpJ5",
     "cluster_name" : "docker-cluster",
     "cluster_uuid" : "0DZTV2FDSzyIUUDBbxuGCw",
     "version" : {
-      "number" : "6.4.2",
+      "number" : "6.4.3",
       "build_flavor" : "default",
       "build_type" : "tar",
       "build_hash" : "04711c2",
@@ -30,16 +32,15 @@
 3) Install Kibana
   https://www.elastic.co/guide/en/kibana/current/docker.html
   
-  $ sudo docker pull docker.elastic.co/kibana/kibana:6.4.2
+  $ sudo docker pull docker.elastic.co/kibana/kibana:6.4.3
   
   https://docs.docker.com/samples/library/kibana/#running-in-development-mode
-  $ docker network create somenetwork
-  $ docker run -d --name kibana -e ELASTICSEARCH_URL=http://95.216.137.70:9200 --net somenetwork -p 5601:5601 docker.elastic.co/kibana/kibana:6.4.2
+  $ docker run --name kibana --link "elasticsearch:elasticsearch" -p 5601:5601 docker.elastic.co/kibana/kibana:6.4.2
   
   $ sudo docker ps
 CONTAINER ID        IMAGE                                                 COMMAND                  CREATED              STATUS              PORTS                                            NAMES
-776e51941216        docker.elastic.co/elasticsearch/elasticsearch:6.4.2   "/usr/local/bin/dock…"   5 seconds ago        Up 4 seconds        0.0.0.0:9200->9200/tcp, 0.0.0.0:9300->9300/tcp   elasticsearch
-826e2b8b7817        docker.elastic.co/kibana/kibana:6.4.2                 "/usr/local/bin/kiba…"   About a minute ago   Up About a minute   0.0.0.0:5601->5601/tcp                           kibana
+776e51941216        docker.elastic.co/elasticsearch/elasticsearch:6.4.2   "/usr/local/bin/dock…"   5 seconds ago        Up 4 seconds        9200/tcp, 9300/tcp   				elasticsearch
+826e2b8b7817        docker.elastic.co/kibana/kibana:6.4.2                 "/usr/local/bin/kiba…"   About a minute ago   Up About a minute   0.0.0.0:5601->5601/tcp                	      kibana
   
   $ curl localhost:5601
 <script>var hashRoute = '/app/kibana';
@@ -53,13 +54,7 @@ if (hash.length) {
 }</script>
 
 
-
-Note: check and publish this alternative
-$ docker run -d --name elasticsearch -e "discovery.type=single-node" docker.elastic.co/elasticsearch/elasticsearch:6.4.3
-$ docker run -d --name kibana --link "elasticsearch:elasticsearch" -p 5601:5601  docker.elastic.co/kibana/kibana:6.4.3
-$ docker run -d --name logstash --link "elasticsearch:elasticsearch" -p 514:514  docker.elastic.co/logstash/logstash:6.4.3
-  
-$ $ docker network inspect bridge
+$ docker network inspect bridge
 [
     {
         "Name": "bridge",
@@ -166,4 +161,7 @@ output
 
 
 - run the container
-$ docker run -d --name logstash --link "elasticsearch:elasticsearch" -p 514:514 -v ~/proyectos/elk-docker/logstash/pipeline/:/usr/share/logstash/pipeline/ -v ~/proyectos/elk-docker/logstash/data/logs/:/usr/share/logstash/data/logs/  docker.elastic.co/logstash/logstash:6.4.3
+$ docker run -d --name logstash --link "elasticsearch:elasticsearch" -v ~/proyectos/elk-docker/logstash/pipeline/:/usr/share/logstash/pipeline/ -v ~/proyectos/elk-docker/logstash/data/logs/:/usr/share/logstash/data/logs/  docker.elastic.co/logstash/logstash:6.4.3
+
+When we allow for Syslog input, add the parameter  -p 5140:5140.
+TCP port 514 will not work as logstash does not have root privileges to start ports < 1024.
