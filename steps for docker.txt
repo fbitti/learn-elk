@@ -35,12 +35,12 @@
   $ sudo docker pull docker.elastic.co/kibana/kibana:6.4.3
   
   https://docs.docker.com/samples/library/kibana/#running-in-development-mode
-  $ docker run --name kibana --link "elasticsearch:elasticsearch" -p 5601:5601 docker.elastic.co/kibana/kibana:6.4.2
+  $ docker run --name kibana --link "elasticsearch:elasticsearch" -p 5601:5601 docker.elastic.co/kibana/kibana:6.4.3
   
   $ sudo docker ps
 CONTAINER ID        IMAGE                                                 COMMAND                  CREATED              STATUS              PORTS                                            NAMES
-776e51941216        docker.elastic.co/elasticsearch/elasticsearch:6.4.2   "/usr/local/bin/dock…"   5 seconds ago        Up 4 seconds        9200/tcp, 9300/tcp   				elasticsearch
-826e2b8b7817        docker.elastic.co/kibana/kibana:6.4.2                 "/usr/local/bin/kiba…"   About a minute ago   Up About a minute   0.0.0.0:5601->5601/tcp                	      kibana
+776e51941216        docker.elastic.co/elasticsearch/elasticsearch:6.4.3   "/usr/local/bin/dock…"   5 seconds ago        Up 4 seconds        9200/tcp, 9300/tcp   				elasticsearch
+826e2b8b7817        docker.elastic.co/kibana/kibana:6.4.3                 "/usr/local/bin/kiba…"   About a minute ago   Up About a minute   0.0.0.0:5601->5601/tcp                	      kibana
   
   $ curl localhost:5601
 <script>var hashRoute = '/app/kibana';
