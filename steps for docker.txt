@@ -176,14 +176,20 @@ $ docker run -d --name nginx --link "kibana:kibana" -p 5160:5160 nginx
 Enter the nginx container's interactive shell:
 $ docker exec -it nginx /bin/bash
 
+Get the htpasswd tool:
+# apt-get update
+# apt-get install apache2-utils -y
 
 Create the user on the nginx container:
-$ sudo htpasswd -c /etc/nginx/htpasswd.kibanauser admin
-Type the password twice.
+# htpasswd -c /etc/nginx/htpasswd.kibanauser admin
+New password:
+Re-type new password:
+Adding password for user admin
 
 Add this to /etc/nginx/nginx.conf:
+(I like the nano editor: apt-get install nano -y)
 server {
-	listen 5160;
+	listen 5601;
 	server_name kibana;
 	auth_basic "Restricted Access";
 	auth_basic_user_file /etc/nginx/htpasswd.kibanauser;
