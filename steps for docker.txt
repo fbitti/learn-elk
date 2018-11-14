@@ -176,6 +176,22 @@ $ docker run -d --name nginx --link "kibana:kibana" -p 5160:5160 nginx
 Enter the nginx container's interactive shell:
 $ docker exec -it nginx /bin/bash
 
+Confirm you can access Kibana:
+# apt-get install curl -y
+# curl -IL kibana:5601
+HTTP/1.1 302 Found
+location: /login?next=%2F
+kbn-name: kibana
+cache-control: no-cache
+Date: Wed, 14 Nov 2018 18:18:10 GMT
+Connection: keep-alive
+
+HTTP/1.1 200 OK
+kbn-name: kibana
+cache-control: no-cache
+Date: Wed, 14 Nov 2018 18:18:10 GMT
+Connection: keep-alive
+
 Get the htpasswd tool:
 # apt-get update
 # apt-get install apache2-utils -y
@@ -202,5 +218,11 @@ server {
 		proxy_cache_bypass $http_upgrade;
 	}
 }
+
+Reload nginx config
+# nginx -t
+nginx: the configuration file /etc/nginx/nginx.conf syntax is ok
+nginx: configuration file /etc/nginx/nginx.conf test is successful
+
 
 
