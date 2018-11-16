@@ -110,7 +110,7 @@ $ docker network inspect bridge
 
 
 In order to configure logstash and integrate it with Elasticsearch and Kibana, follow these steps:
-- Inside /data/logs/logs, download and uncompress https://github.com/elastic/elk-index-size-tests/blob/master/logs.gz
+- Inside data/logs/logs, download and uncompress https://github.com/elastic/elk-index-size-tests/blob/master/logs.gz
 - Have this file inside /pipeline/logstash.conf:
 input
 {
@@ -160,15 +160,20 @@ output
 }
 
 
-- run the container
+- run the logstash container
 $ docker run -d -p 5140:5140 --name logstash --link "elasticsearch:elasticsearch" -v ~/proyectos/elk-docker/logstash/pipeline/:/usr/share/logstash/pipeline/ -v ~/proyectos/elk-docker/logstash/data/logs/:/usr/share/logstash/data/logs/  docker.elastic.co/logstash/logstash:6.4.3
+
+Note: use the command realpath to find out the directories' real path:
+$ realpath elk-docker/logstash/pipeline/
+/home/fernando/elk-docker/logstash/pipeline
 
 Note: we're opening TCP port 5140 because logstash does not have root privileges to start ports < 1024.
 
 syslog {
-
+	port => 5140
 }
 
+***********
 
 Steps for basic auth on Kibana through Nginx:
 
@@ -202,10 +207,10 @@ Get the htpasswd tool:
 (Note: review whether httpd-tools is a lighter alternative)
 
 Create the user on the nginx container:
-# htpasswd -c /etc/nginx/htpasswd.kibanauser admin
+# htpasswd -c /etc/nginx/htpasswd.kibanauser kibana
 New password:
 Re-type new password:
-Adding password for user admin
+Adding password for user kibana
 
 Add this server configuration to the beginning of the /etc/nginx/conf.d/default.conf file:
 (If you like the nano editor: apt-get install nano -y)
@@ -239,6 +244,9 @@ Content-Type: text/html
 Content-Length: 179
 Connection: keep-alive
 WWW-Authenticate: Basic realm="Restricted"
+
+Navigate with a browser. Once you make sure the image is doing its job, commit the changes:
+$ docker commit nginx nginx_basic_auth
 
 
 
