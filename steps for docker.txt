@@ -248,6 +248,15 @@ WWW-Authenticate: Basic realm="Restricted"
 Navigate with a browser. Once you make sure the image is doing its job, commit the changes:
 $ docker commit nginx nginx_basic_auth
 
+Note: it may be a good idea to attach the logs directory to an the local filesystem, for debugging.
+root@fa42b11e32c0:/# ls -al /var/log/nginx/
+total 8
+drwxr-xr-x 1 root root 4096 Nov 16 13:32 .
+drwxr-xr-x 1 root root 4096 Nov 16 19:37 ..
+lrwxrwxrwx 1 root root   11 Nov 16 13:32 access.log -> /dev/stdout
+lrwxrwxrwx 1 root root   11 Nov 16 13:32 error.log -> /dev/stderr
+
+
 
 
 
