@@ -161,22 +161,27 @@ output
 
 
 - run the container
-$ docker run -d --name logstash --link "elasticsearch:elasticsearch" -v ~/proyectos/elk-docker/logstash/pipeline/:/usr/share/logstash/pipeline/ -v ~/proyectos/elk-docker/logstash/data/logs/:/usr/share/logstash/data/logs/  docker.elastic.co/logstash/logstash:6.4.3
+$ docker run -d -p 5140:5140 --name logstash --link "elasticsearch:elasticsearch" -v ~/proyectos/elk-docker/logstash/pipeline/:/usr/share/logstash/pipeline/ -v ~/proyectos/elk-docker/logstash/data/logs/:/usr/share/logstash/data/logs/  docker.elastic.co/logstash/logstash:6.4.3
 
-When we allow for Syslog input, add the parameter  -p 5140:5140.
-TCP port 514 will not work as logstash does not have root privileges to start ports < 1024.
+Note: we're opening TCP port 5140 because logstash does not have root privileges to start ports < 1024.
+
+syslog {
+
+}
 
 
-Steps for basic auth on Kibana:
-When you access Kibana the requests actually go through NGINX.
+Steps for basic auth on Kibana through Nginx:
+
 $ docker run -d --name kibana --link "elasticsearch:elasticsearch" docker.elastic.co/kibana/kibana:6.4.3
+(Note: do not open any TCP ports on Kibana's container as all requests will be proxied by Nginx)
 
-$ docker run -d --name nginx --link "kibana:kibana" -p 5160:5160 nginx
+$ docker run -d --name nginx --link "kibana:kibana" -p 5601:5601 nginx
 
 Enter the nginx container's interactive shell:
 $ docker exec -it nginx /bin/bash
 
-Confirm you can access Kibana:
+Confirm the Nginx container can access Kibana:
+# apt-get update
 # apt-get install curl -y
 # curl -IL kibana:5601
 HTTP/1.1 302 Found
@@ -193,8 +198,8 @@ Date: Wed, 14 Nov 2018 18:18:10 GMT
 Connection: keep-alive
 
 Get the htpasswd tool:
-# apt-get update
 # apt-get install apache2-utils -y
+(Note: review whether httpd-tools is a lighter alternative)
 
 Create the user on the nginx container:
 # htpasswd -c /etc/nginx/htpasswd.kibanauser admin
@@ -202,27 +207,39 @@ New password:
 Re-type new password:
 Adding password for user admin
 
-Add this to /etc/nginx/nginx.conf:
-(I like the nano editor: apt-get install nano -y)
+Add this server configuration to the beginning of the /etc/nginx/conf.d/default.conf file:
+(If you like the nano editor: apt-get install nano -y)
+
 server {
-	listen 5601;
-	server_name kibana;
-	auth_basic "Restricted Access";
-	auth_basic_user_file /etc/nginx/htpasswd.kibanauser;
-	location / {
-		proxy_pass http://kibana:5601;
-		proxy_http_version 1.1;
-		proxy_set_header Upgrade $http_upgrade;
-		proxy_set_header Connection "upgrade";
-		proxy_set_header Host $host;
-		proxy_cache_bypass $http_upgrade;
-	}
+  listen *:5601;
+  server_name _;
+  location / {
+    proxy_pass http://kibana:5601;
+    auth_basic "Restricted";
+    auth_basic_user_file /etc/nginx/htpasswd.kibanauser;
+  }
 }
 
 Reload nginx config
 # nginx -t
 nginx: the configuration file /etc/nginx/nginx.conf syntax is ok
 nginx: configuration file /etc/nginx/nginx.conf test is successful
+# nginx -s reload
+(Note: I'm using this command because if I run 'service nginx reload' the docker container crashes and silently exits from the bash.
+	If I try to restart it, I get this error:
+	$ docker exec -it nginx /bin/bash
+	Error response from daemon: Container 3dfcd5f89ff02927ba9b04945c18b7da37e0e000b696f682a01eec04ebcda450 is not running)
+
+Confirm the restriction is working:
+# curl -IL localhost:5601
+HTTP/1.1 401 Unauthorized
+Server: nginx/1.15.6
+Date: Fri, 16 Nov 2018 16:48:20 GMT
+Content-Type: text/html
+Content-Length: 179
+Connection: keep-alive
+WWW-Authenticate: Basic realm="Restricted"
+
 
 
 
