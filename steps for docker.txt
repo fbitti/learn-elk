@@ -215,7 +215,7 @@ Adding password for user kibana
 Alternatively we may use the batch mode, for example: htpasswd -b -c htpasswd.test user userpassword.
 This would allow us to create scripts to automate the deployment.
 
-Add this server configuration to the beginning of the /etc/nginx/conf.d/default.conf file:
+Replace the /etc/nginx/conf.d/default.conf file by:
 (If you like the nano editor: apt-get install nano -y)
 
 server {
