@@ -228,6 +228,10 @@ server {
   }
 }
 
+Note: check the possibility of using this command
+printf '%s\n%s\n' "to be prepended" "$(cat text.txt)" >text.txt
+to automate prepending text to this file.
+
 Reload nginx config
 # nginx -t
 nginx: the configuration file /etc/nginx/nginx.conf syntax is ok
