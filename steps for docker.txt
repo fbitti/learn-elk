@@ -173,6 +173,8 @@ syslog {
 	port => 5140
 }
 
+Note: review this tutorial https://www.kartar.net/2014/09/when-logstash-and-syslog-go-wrong/
+
 ***********
 
 Steps for basic auth on Kibana through Nginx:
