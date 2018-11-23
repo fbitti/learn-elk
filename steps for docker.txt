@@ -296,6 +296,49 @@ services:
       - "5601:5601"
     restart: always
 
+================
+Follow these steps to combine nginx with php-fpm
+$ cat docker-compose.yml
+web:
+    image: nginx:latest
+    ports:
+        - "8080:80"
+    volumes:
+        - /home/fernando/elk-docker/nginx:/etc/nginx/conf.d/
+        - /home/fernando/elk-docker/php:/var/www/html/
+    links:
+        - php
+php:
+    image: php:fpm-alpine
+    volumes:
+        - /home/fernando/elk-docker/php:/var/www/html/
+	
+~/elk-docker$ ls -al php
+total 16
+drwxr-xr-x 2 fernando fernando 4096 Nov 23 15:43 .
+drwxr-xr-x 7 fernando fernando 4096 Nov 23 16:20 ..
+-rw-r--r-- 1 fernando fernando  612 Nov 23 15:43 index.html
+-rw-r--r-- 1 fernando fernando   27 Nov 23 15:43 index.php
 
+$ cat nginx/default.conf
+server {
+    index index.html;
+    server_name php-docker.local;
+    error_log  /var/log/nginx/error.log;
+    access_log /var/log/nginx/access.log;
+    root /var/www/html;
+
+    location ~ \.php$ {
+        try_files $uri =404;
+        fastcgi_split_path_info ^(.+\.php)(/.+)$;
+        fastcgi_pass php:9000;
+        fastcgi_index index.php;
+        include fastcgi_params;
+        fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
+        fastcgi_param PATH_INFO $fastcgi_path_info;
+    }
+}
+
+thanks to http://geekyplatypus.com/dockerise-your-php-application-with-nginx-and-php7-fpm/ !
 
 
